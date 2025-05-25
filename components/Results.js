@@ -1,92 +1,89 @@
+import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import { useRouter } from 'next/router';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-} from 'chart.js';
+import 'chart.js/auto';
+import '@/styles/globals.css';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-const descriptions = {
-  D: "Direct and decisive. You move fast, take charge, and focus on results.",
-  I: "People-focused and energetic. You thrive on interaction and influence.",
-  S: "Steady and dependable. You value consistency, support, and relationships.",
-  C: "Precise and analytical. You seek accuracy, logic, and clear standards."
-};
-
-const pointers = {
-  D: "You like control — but teams thrive when others lead, too.",
-  I: "Your energy inspires — just watch for missed details.",
-  S: "You create stability — but don’t avoid needed change.",
-  C: "You think deep — just don’t get stuck in perfection."
-};
-
-export default function Results() {
-  const router = useRouter();
-  const { D = 0, I = 0, S = 0, C = 0 } = router.query;
-
-  const scores = { D: Number(D), I: Number(I), S: Number(S), C: Number(C) };
-  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-  const [topType, topScore] = sorted[0];
-
+export default function Results({ scores }) {
   const data = {
     labels: ['D', 'I', 'S', 'C'],
     datasets: [
       {
-        label: 'Your DISC Style Breakdown',
+        label: 'Your DISC Style Scores',
         data: [scores.D, scores.I, scores.S, scores.C],
-        backgroundColor: ['#ff4444', '#ffbb33', '#00C851', '#33b5e5']
-      }
-    ]
+        backgroundColor: ['#f44336', '#ffeb3b', '#4caf50', '#2196f3'],
+        borderWidth: 1,
+      },
+    ],
   };
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: { display: false },
-      title: { display: true, text: 'Your DISC Profile' }
+  const maxScore = Math.max(scores.D, scores.I, scores.S, scores.C);
+  const primaryType = Object.keys(scores).find(
+    (key) => scores[key] === maxScore
+  );
+
+  const typeDescriptions = {
+    D: {
+      title: 'Dominance (D)',
+      text: 'You thrive on results and challenges. You’re assertive, goal-oriented, and take charge in any situation.',
+      color: '#f44336',
     },
-    scales: {
-      y: { beginAtZero: true, max: 5 }
-    }
+    I: {
+      title: 'Influence (I)',
+      text: 'You inspire and energize others. You excel at communication, persuasion, and building relationships.',
+      color: '#ffeb3b',
+    },
+    S: {
+      title: 'Steadiness (S)',
+      text: 'You bring calm, support, and consistency. You’re patient, empathetic, and a dependable team member.',
+      color: '#4caf50',
+    },
+    C: {
+      title: 'Conscientiousness (C)',
+      text: 'You analyze and strive for precision. You value structure, accuracy, and doing things the right way.',
+      color: '#2196f3',
+    },
   };
 
   return (
-    <div style={{ padding: 30, backgroundColor: '#111', color: '#fff', minHeight: '100vh' }}>
-      <h1>Your DISC Results</h1>
-      <Bar data={data} options={options} />
+    <div className="min-h-screen bg-black text-white p-6 flex flex-col items-center">
+      <h1 className="text-3xl font-bold mb-2">Your DISC Results</h1>
+      <div className="bg-gray-900 p-4 rounded-xl shadow-md mb-4 w-full max-w-xl">
+        <h2 className="text-xl font-semibold mb-1" style={{ color: typeDescriptions[primaryType].color }}>
+          Your Primary Style: {typeDescriptions[primaryType].title}
+        </h2>
+        <p className="text-sm text-gray-300">
+          {typeDescriptions[primaryType].text}
+        </p>
+      </div>
 
-      <div style={{ marginTop: 40 }}>
-        <h2>Your Top Style: {topType}</h2>
-        <p>{descriptions[topType]}</p>
-        <p style={{ marginTop: 10, fontStyle: 'italic' }}>{pointers[topType]}</p>
+      <div className="bg-gray-900 p-4 rounded-xl shadow-md mb-6 w-full max-w-xl">
+        <Bar data={data} />
+      </div>
 
-        <div style={{ marginTop: 40 }}>
-          <h3>Want your own AI coach built for your DISC style?</h3>
-          <p>We’re building something powerful. Join the waitlist to be first in line.</p>
-          <a
-            href="https://gurutypeai.carrd.co" // Change this to your actual waitlist URL
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-block',
-              marginTop: 20,
-              padding: '12px 24px',
-              backgroundColor: '#33b5e5',
-              color: '#111',
-              borderRadius: 6,
-              fontWeight: 'bold',
-              textDecoration: 'none'
-            }}
+      <div className="grid gap-4 w-full max-w-xl">
+        {Object.entries(typeDescriptions).map(([key, value]) => (
+          <div
+            key={key}
+            className="bg-gray-800 p-4 rounded-lg border border-gray-700"
           >
-            Join the Waitlist
-          </a>
-        </div>
+            <h3 className="font-bold" style={{ color: value.color }}>
+              {value.title}
+            </h3>
+            <p className="text-sm text-gray-300">{value.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 text-center">
+        <p className="text-sm text-gray-400 mb-2">
+          Want to dive deeper with your AI-powered DISC profile?
+        </p>
+        <a
+          href="https://gurutype.ai/waitlist"
+          className="inline-block px-6 py-3 bg-white text-black font-semibold rounded-full hover:bg-gray-200"
+        >
+          Join the Waitlist
+        </a>
       </div>
     </div>
   );
