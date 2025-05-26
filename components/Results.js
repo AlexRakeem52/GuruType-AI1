@@ -10,7 +10,7 @@ import {
   Legend,
 } from 'chart.js';
 
-import '../styles/globals.css'; // Correct relative path
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
