@@ -2,20 +2,11 @@ import React from 'react'; import { Bar } from 'react-chartjs-2'; import { Chart
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export default function Results({ discScores }) { const labels = ['D', 'I', 'S', 'C'];
+const guruImages = { D: '/tiger.jpg', // Dominance I: '/parrot.jpg', // Influence S: '/elephant.jpg', // Steadiness C: '/fox.jpg', // Conscientiousness };
 
-const data = { labels, datasets: [ { label: 'Your DISC Scores', data: discScores, backgroundColor: ['#f44336', '#ffeb3b', '#4caf50', '#2196f3'], borderWidth: 1, }, ], };
+const summaries = { D: { title: 'Dominance (D)', summary: 'You are decisive, assertive, and goal-driven. You thrive on overcoming challenges and leading the charge toward results.', }, I: { title: 'Influence (I)', summary: 'You are outgoing, enthusiastic, and a natural motivator. You bring energy to groups and inspire others with your optimism.', }, S: { title: 'Steadiness (S)', summary: 'You are dependable, cooperative, and loyal. You create harmony, offer support, and value consistency in relationships and environments.', }, C: { title: 'Conscientiousness (C)', summary: 'You are analytical, precise, and detail-oriented. You strive for accuracy, structure, and high standards in all that you do.', }, };
 
-const options = { responsive: true, scales: { y: { beginAtZero: true, max: 100, }, }, };
+export default function Results({ discScores }) { const types = ['D', 'I', 'S', 'C']; const scores = { D: discScores[0], I: discScores[1], S: discScores[2], C: discScores[3], };
 
-const topIndex = discScores.indexOf(Math.max(...discScores)); const topType = labels[topIndex];
-
-const summaries = { D: { title: 'Dominance (D)', summary: 'You are direct, competitive, and results-driven.', }, I: { title: 'Influence (I)', summary: 'You are outgoing, persuasive, and energetic.', }, S: { title: 'Steadiness (S)', summary: 'You are calm, loyal, and a great team player.', }, C: { title: 'Conscientiousness (C)', summary: 'You are analytical, precise, and quality-focused.', }, };
-
-const { title, summary } = summaries[topType];
-
-return ( <div className="text-center text-white"> <h2 className="text-2xl font-bold mb-4">Your DISC Result: {title}</h2> <p className="mb-4">{summary}</p> <div className="mb-6"> <Bar data={data} options={options} /> </div> <p className="text-lg mb-2"> Want a full breakdown of your DISC style and coaching insights? </p> <a
-href="#"
-className="inline-block bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-500 transition"
-> Join the Waitlist </a> </div> ); }
+const data = { labels: types, datasets: [ { label: 'Your DISC Scores',
 
