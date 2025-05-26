@@ -10,11 +10,13 @@ import {
   Legend,
 } from 'chart.js';
 
-
-
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Results({ scores }) {
+  if (!scores) {
+    return <p>Loading results...</p>;
+  }
+
   const data = {
     labels: ['D', 'I', 'S', 'C'],
     datasets: [
@@ -46,44 +48,40 @@ export default function Results({ scores }) {
     },
     I: {
       title: 'Influence (I)',
-      summary: 'You are enthusiastic, outgoing, and people-oriented.',
+      summary: 'You are sociable, persuasive, and optimistic.',
     },
     S: {
       title: 'Steadiness (S)',
-      summary: 'You are dependable, calm, and supportive.',
+      summary: 'You are calm, supportive, and patient.',
     },
     C: {
       title: 'Conscientiousness (C)',
-      summary: 'You are analytical, detail-focused, and value accuracy.',
+      summary: 'You are analytical, detail-oriented, and precise.',
     },
   };
 
+  const { title, summary } = summaries[topType];
+
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h2>Your DISC Personality Results</h2>
-      <Bar data={data} options={options} />
-      <div style={{ marginTop: '2rem' }}>
-        <h3>{summaries[topType].title}</h3>
-        <p>{summaries[topType].summary}</p>
+    <div style={{ padding: '2rem' }}>
+      <h2>Your DISC Style: {title}</h2>
+      <p>{summary}</p>
+      <div style={{ maxWidth: '600px', margin: '2rem auto' }}>
+        <Bar data={data} options={options} />
       </div>
-      <div style={{ marginTop: '2rem' }}>
-        <p>Want deeper insights and AI coaching?</p>
-        <a
-          href="https://gurutypeai.com/waitlist"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{
-            display: 'inline-block',
-            padding: '0.75rem 1.5rem',
-            backgroundColor: '#000',
-            color: '#fff',
-            borderRadius: '5px',
-            textDecoration: 'none',
-          }}
-        >
-          Join the Waitlist
-        </a>
-      </div>
+      <p>Want to go deeper? Join the waitlist to unlock personalized coaching insights.</p>
+      <a href="https://gurutypeai.com#waitlist" style={{
+        display: 'inline-block',
+        marginTop: '1rem',
+        padding: '0.75rem 1.5rem',
+        backgroundColor: '#2196f3',
+        color: '#fff',
+        textDecoration: 'none',
+        borderRadius: '5px',
+        fontWeight: 'bold'
+      }}>
+        Join the Waitlist
+      </a>
     </div>
   );
 }
