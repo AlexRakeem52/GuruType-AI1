@@ -1,14 +1,25 @@
-vimport React from 'react';
+import React from 'react';
 import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto';
-import '../styles/globals.css'; // Corrected path
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+
+import '../styles/globals.css'; // Correct relative path
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export default function Results({ scores }) {
   const data = {
     labels: ['D', 'I', 'S', 'C'],
     datasets: [
       {
-        label: 'Your DISC Style Scores',
+        label: 'Your DISC Scores',
         data: [scores.D, scores.I, scores.S, scores.C],
         backgroundColor: ['#f44336', '#ffeb3b', '#4caf50', '#2196f3'],
         borderWidth: 1,
@@ -16,47 +27,58 @@ export default function Results({ scores }) {
     ],
   };
 
-  const type = Object.entries(scores).reduce((a, b) => (b[1] > a[1] ? b : a))[0];
-  const descriptions = {
-    D: 'You are driven, direct, and results-oriented.',
-    I: 'You are inspiring, sociable, and enthusiastic.',
-    S: 'You are supportive, dependable, and loyal.',
-    C: 'You are careful, detail-oriented, and analytical.',
+  const options = {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 10,
+      },
+    },
   };
 
-  const tips = {
-    D: ['Lead with impact, but listen more.', 'Delegate and trust others.'],
-    I: ['Channel your energy into clear goals.', 'Follow through on commitments.'],
-    S: ['Speak up and assert your ideas.', 'Adapt to fast-changing environments.'],
-    C: ['Avoid overanalyzing.', 'Embrace progress over perfection.'],
+  const topType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+
+  const summaries = {
+    D: {
+      title: 'Dominance (D)',
+      summary: 'You are direct, competitive, and results-driven.',
+    },
+    I: {
+      title: 'Influence (I)',
+      summary: 'You are enthusiastic, outgoing, and people-oriented.',
+    },
+    S: {
+      title: 'Steadiness (S)',
+      summary: 'You are dependable, calm, and supportive.',
+    },
+    C: {
+      title: 'Conscientiousness (C)',
+      summary: 'You are analytical, detail-focused, and value accuracy.',
+    },
   };
 
   return (
-    <div style={{ padding: '2rem', color: '#fff' }}>
-      <h2>Your DISC Type: {type}</h2>
-      <p>{descriptions[type]}</p>
-
-      <h3>Quick Tips:</h3>
-      <ul>
-        {tips[type].map((tip, idx) => (
-          <li key={idx}>{tip}</li>
-        ))}
-      </ul>
-
-      <div style={{ maxWidth: '600px', margin: '2rem auto' }}>
-        <Bar data={data} />
+    <div style={{ padding: '2rem', textAlign: 'center' }}>
+      <h2>Your DISC Personality Results</h2>
+      <Bar data={data} options={options} />
+      <div style={{ marginTop: '2rem' }}>
+        <h3>{summaries[topType].title}</h3>
+        <p>{summaries[topType].summary}</p>
       </div>
-
-      <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-        <p>Want deeper insight and an AI-powered coaching experience?</p>
+      <div style={{ marginTop: '2rem' }}>
+        <p>Want deeper insights and AI coaching?</p>
         <a
-          href="https://your-waitlist-link.com"
+          href="https://gurutypeai.com/waitlist"
+          target="_blank"
+          rel="noopener noreferrer"
           style={{
-            background: '#2196f3',
-            padding: '10px 20px',
-            color: 'white',
-            textDecoration: 'none',
+            display: 'inline-block',
+            padding: '0.75rem 1.5rem',
+            backgroundColor: '#000',
+            color: '#fff',
             borderRadius: '5px',
+            textDecoration: 'none',
           }}
         >
           Join the Waitlist
