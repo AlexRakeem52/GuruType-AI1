@@ -1,95 +1,100 @@
-import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import { useState } from 'react';
+import Results from '../components/Results';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+export default function Home() {
+  const [step, setStep] = useState(0);
+  const [scores, setScores] = useState({ D: 0, I: 0, S: 0, C: 0 });
+  const [showResults, setShowResults] = useState(false);
 
-const guruImages = {
-  D: '/tiger.jpg',       // Dominance
-  I: '/parrot.jpg',      // Influence
-  S: '/elephant.jpg',    // Steadiness
-  C: '/fox.jpg',         // Conscientiousness
-};
-
-const summaries = {
-  D: {
-    title: 'Dominance (D)',
-    summary: 'You are decisive, assertive, and goal-driven. You thrive on overcoming challenges and leading the charge toward results.',
-  },
-  I: {
-    title: 'Influence (I)',
-    summary: 'You are outgoing, enthusiastic, and a natural motivator. You bring energy to groups and inspire others with your optimism.',
-  },
-  S: {
-    title: 'Steadiness (S)',
-    summary: 'You are dependable, cooperative, and loyal. You create harmony, offer support, and value consistency in relationships and environments.',
-  },
-  C: {
-    title: 'Conscientiousness (C)',
-    summary: 'You are analytical, precise, and detail-oriented. You strive for accuracy, structure, and high standards in all that you do.',
-  },
-};
-
-export default function Results({ discScores }) {
-  const types = ['D', 'I', 'S', 'C'];
-  const scores = {
-    D: discScores[0],
-    I: discScores[1],
-    S: discScores[2],
-    C: discScores[3],
-  };
-
-  const topType = types.reduce((a, b) => (scores[a] > scores[b] ? a : b));
-  const data = {
-    labels: types,
-    datasets: [
-      {
-        label: 'Your DISC Scores',
-        data: [scores.D, scores.I, scores.S, scores.C],
-        backgroundColor: ['#f44336', '#ffeb3b', '#4caf50', '#2196f3'],
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 100,
-      },
+  const questions = [
+    {
+      question: 'How do you respond to challenges?',
+      answers: [
+        { text: 'Energetic and talkative', type: 'I' },
+        { text: 'Direct and assertive', type: 'D' },
+        { text: 'Calm and supportive', type: 'S' },
+        { text: 'Analytical and precise', type: 'C' },
+      ],
     },
+    {
+      question: 'What describes your communication style?',
+      answers: [
+        { text: 'Lively and persuasive', type: 'I' },
+        { text: 'Straightforward and firm', type: 'D' },
+        { text: 'Friendly and soft-spoken', type: 'S' },
+        { text: 'Detailed and structured', type: 'C' },
+      ],
+    },
+    {
+      question: 'How do you make decisions?',
+      answers: [
+        { text: 'Quick and goal-driven', type: 'D' },
+        { text: 'Based on feelings and harmony', type: 'S' },
+        { text: 'Influenced by others and positivity', type: 'I' },
+        { text: 'Logical and research-based', type: 'C' },
+      ],
+    },
+    {
+      question: 'How do you prefer to work?',
+      answers: [
+        { text: 'Independently with results', type: 'D' },
+        { text: 'With team harmony', type: 'S' },
+        { text: 'In a flexible, fun environment', type: 'I' },
+        { text: 'With clear systems and rules', type: 'C' },
+      ],
+    },
+    {
+      question: 'What motivates you most?',
+      answers: [
+        { text: 'Achievement and winning', type: 'D' },
+        { text: 'Security and trust', type: 'S' },
+        { text: 'Recognition and popularity', type: 'I' },
+        { text: 'Accuracy and quality', type: 'C' },
+      ],
+    },
+  ];
+
+  const handleAnswer = (type) => {
+    const updatedScores = { ...scores, [type]: scores[type] + 1 };
+    setScores(updatedScores);
+
+    if (step + 1 < questions.length) {
+      setStep(step + 1);
+    } else {
+      setShowResults(true);
+    }
   };
+
+  const discScores = [
+    scores['D'] * 20,
+    scores['I'] * 20,
+    scores['S'] * 20,
+    scores['C'] * 20,
+  ];
 
   return (
-    <div className="flex flex-col items-center text-white">
-      <div className="w-full max-w-md">
-        <Bar data={data} options={options} />
-      </div>
-
-      <div className="mt-6 text-center">
-        <img
-          src={guruImages[topType]}
-          alt={`${topType} Guru`}
-          className="mx-auto w-40 h-40 object-contain rounded-full border-4 border-white mb-4"
-        />
-        <h2 className="text-xl font-bold mb-2">{summaries[topType].title}</h2>
-        <p className="mb-4">{summaries[topType].summary}</p>
-        <a
-          href="#"
-          className="inline-block bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-500 transition"
-        >
-          Join the Waitlist
-        </a>
-      </div>
+    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
+      {!showResults ? (
+        <>
+          <h1 className="text-3xl font-bold mb-6">Welcome to GuruType AI</h1>
+          <p className="mb-4 text-lg">{questions[step].question}</p>
+          <div className="space-y-2">
+            {questions[step].answers.map((answer, index) => (
+              <button
+                key={index}
+                onClick={() => handleAnswer(answer.type)}
+                className="bg-gray-800 px-6 py-2 rounded hover:bg-gray-700 transition"
+              >
+                {answer.text}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : (
+        <div className="text-center max-w-3xl w-full">
+          <Results discScores={discScores} />
+        </div>
+      )}
     </div>
   );
 }
