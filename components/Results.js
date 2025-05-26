@@ -1,87 +1,21 @@
-import React from 'react';
-import { Bar } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
+import React from 'react'; import { Bar } from 'react-chartjs-2'; import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-export default function Results({ scores }) {
-  if (!scores) {
-    return <p>Loading results...</p>;
-  }
+export default function Results({ discScores }) { const labels = ['D', 'I', 'S', 'C'];
 
-  const data = {
-    labels: ['D', 'I', 'S', 'C'],
-    datasets: [
-      {
-        label: 'Your DISC Scores',
-        data: [scores.D, scores.I, scores.S, scores.C],
-        backgroundColor: ['#f44336', '#ffeb3b', '#4caf50', '#2196f3'],
-        borderWidth: 1,
-      },
-    ],
-  };
+const data = { labels, datasets: [ { label: 'Your DISC Scores', data: discScores, backgroundColor: ['#f44336', '#ffeb3b', '#4caf50', '#2196f3'], borderWidth: 1, }, ], };
 
-  const options = {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 10,
-      },
-    },
-  };
+const options = { responsive: true, scales: { y: { beginAtZero: true, max: 100, }, }, };
 
-  const topType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+const topIndex = discScores.indexOf(Math.max(...discScores)); const topType = labels[topIndex];
 
-  const summaries = {
-    D: {
-      title: 'Dominance (D)',
-      summary: 'You are direct, competitive, and results-driven.',
-    },
-    I: {
-      title: 'Influence (I)',
-      summary: 'You are sociable, persuasive, and optimistic.',
-    },
-    S: {
-      title: 'Steadiness (S)',
-      summary: 'You are calm, supportive, and patient.',
-    },
-    C: {
-      title: 'Conscientiousness (C)',
-      summary: 'You are analytical, detail-oriented, and precise.',
-    },
-  };
+const summaries = { D: { title: 'Dominance (D)', summary: 'You are direct, competitive, and results-driven.', }, I: { title: 'Influence (I)', summary: 'You are outgoing, persuasive, and energetic.', }, S: { title: 'Steadiness (S)', summary: 'You are calm, loyal, and a great team player.', }, C: { title: 'Conscientiousness (C)', summary: 'You are analytical, precise, and quality-focused.', }, };
 
-  const { title, summary } = summaries[topType];
+const { title, summary } = summaries[topType];
 
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h2>Your DISC Style: {title}</h2>
-      <p>{summary}</p>
-      <div style={{ maxWidth: '600px', margin: '2rem auto' }}>
-        <Bar data={data} options={options} />
-      </div>
-      <p>Want to go deeper? Join the waitlist to unlock personalized coaching insights.</p>
-      <a href="https://gurutypeai.com#waitlist" style={{
-        display: 'inline-block',
-        marginTop: '1rem',
-        padding: '0.75rem 1.5rem',
-        backgroundColor: '#2196f3',
-        color: '#fff',
-        textDecoration: 'none',
-        borderRadius: '5px',
-        fontWeight: 'bold'
-      }}>
-        Join the Waitlist
-      </a>
-    </div>
-  );
-}
+return ( <div className="text-center text-white"> <h2 className="text-2xl font-bold mb-4">Your DISC Result: {title}</h2> <p className="mb-4">{summary}</p> <div className="mb-6"> <Bar data={data} options={options} /> </div> <p className="text-lg mb-2"> Want a full breakdown of your DISC style and coaching insights? </p> <a
+href="#"
+className="inline-block bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-500 transition"
+> Join the Waitlist </a> </div> ); }
+
