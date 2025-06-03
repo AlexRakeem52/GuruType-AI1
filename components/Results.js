@@ -1,41 +1,43 @@
-import { useEffect, useState } from 'react';
+// components/Results.js
+
+import React, { useState } from 'react';
+import { Bar } from 'react-chartjs-2';
+import axios from 'axios';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
   Tooltip,
-  ResponsiveContainer,
-  CartesianGrid,
-} from 'recharts';
+  Legend,
+} from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const guruImages = {
-  D: '/tiger.jpg',
-  I: '/parrot.jpg',
-  S: '/elephant.jpg',
-  C: '/fox.jpg',
+  D: '/tiger.jpg',      // Dominance
+  I: '/parrot.jpg',     // Influence
+  S: '/elephant.jpg',   // Steadiness
+  C: '/fox.jpg',        // Conscientiousness
 };
 
 const summaries = {
   D: {
     title: 'Dominance (D)',
-    summary:
-      'You are decisive, assertive, and goal-driven. You thrive on overcoming challenges and leading the charge toward results.',
+    summary: 'You are decisive, assertive, and goal-driven. You thrive on overcoming challenges and leading the charge toward results.',
   },
   I: {
     title: 'Influence (I)',
-    summary:
-      'You are outgoing, enthusiastic, and a natural motivator. You bring energy to groups and inspire others with your optimism.',
+    summary: 'You are outgoing, enthusiastic, and a natural motivator. You bring energy to groups and inspire others with your optimism.',
   },
   S: {
     title: 'Steadiness (S)',
-    summary:
-      'You are dependable, cooperative, and loyal. You create harmony, offer support, and value consistency in relationships and environments.',
+    summary: 'You are dependable, cooperative, and loyal. You create harmony, offer support, and value consistency in relationships and environments.',
   },
   C: {
     title: 'Conscientiousness (C)',
-    summary:
-      'You are analytical, precise, and detail-oriented. You strive for accuracy, structure, and high standards in all that you do.',
+    summary: 'You are analytical, precise, and detail-oriented. You strive for accuracy, structure, and high standards in all that you do.',
   },
 };
 
@@ -48,74 +50,68 @@ export default function Results({ discScores }) {
     C: discScores[3],
   };
 
-  const [coachingAdvice, setCoachingAdvice] = useState('');
+  const topType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  const { title, summary } = summaries[topType];
+  const guruImage = guruImages[topType];
+
+  const data = {
+    labels: types,
+    datasets: [
+      {
+        label: 'DISC Scores',
+        data: types.map(type => scores[type]),
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      },
+    ],
+  };
+
+  const options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+      },
+    },
+  };
+
+  const [insights, setInsights] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const topType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
-
-  useEffect(() => {
-    const fetchAdvice = async () => {
+  const getCoachingInsights = async () => {
+    try {
       setLoading(true);
-      try {
-        const response = await fetch('/api/coach', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            discType: topType,
-            discSummary: summaries[topType].summary,
-          }),
-        });
-
-        const data = await response.json();
-        setCoachingAdvice(data.advice || 'No advice available at the moment.');
-      } catch (error) {
-        console.error(error);
-        setCoachingAdvice('There was an error getting your advice.');
-      }
+      const res = await axios.post('/api/coach', { topType });
+      setInsights(res.data.message);
+    } catch (err) {
+      setInsights('Something went wrong. Try again.');
+    } finally {
       setLoading(false);
-    };
-
-    fetchAdvice();
-  }, [topType]);
-
-  const data = types.map((type) => ({
-    type,
-    score: scores[type],
-  }));
+    }
+  };
 
   return (
-    <div className="bg-black text-white p-6 rounded-lg shadow-md">
-      <h2 className="text-xl font-bold mb-4">Your DISC Style Results</h2>
-      <ResponsiveContainer width="100%" height={250}>
-        <BarChart data={data}>
-          <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
-          <XAxis dataKey="type" />
-          <YAxis domain={[0, 100]} />
-          <Tooltip />
-          <Bar dataKey="score" fill="#60a5fa" />
-        </BarChart>
-      </ResponsiveContainer>
-
-      <div className="text-center mt-6">
-        <img
-          src={guruImages[topType]}
-          alt={topType}
-          className="w-32 h-32 mx-auto mb-4 rounded-full border-2 border-white"
-        />
-        <h3 className="text-lg font-bold">{summaries[topType].title}</h3>
-        <p className="mb-4">{summaries[topType].summary}</p>
-        {loading ? (
-          <p className="italic text-sm text-gray-400">Loading AI coaching advice...</p>
-        ) : (
-          <p className="italic text-sm text-gray-200">{coachingAdvice}</p>
-        )}
-        <a
-          href="#"
-          className="mt-6 inline-block bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-500 transition"
-        >
-          Join the Waitlist
-        </a>
-      </div>
+    <div style={{ padding: '2rem', maxWidth: 600, margin: 'auto', textAlign: 'center' }}>
+      <h1>Your DISC Results</h1>
+      <Bar data={data} options={options} />
+      <h2 style={{ marginTop: '2rem' }}>{title}</h2>
+      <p>{summary}</p>
+      <img src={guruImage} alt={`${title} Guru`} style={{ width: '200px', marginTop: '1rem' }} />
+      <button
+        onClick={getCoachingInsights}
+        style={{
+          marginTop: '2rem',
+          padding: '10px 20px',
+          fontSize: '16px',
+          cursor: 'pointer',
+          borderRadius: '8px',
+          backgroundColor: '#0070f3',
+          color: '#fff',
+          border: 'none',
+        }}
+      >
+        {loading ? 'Loading...' : 'Get My Coaching Insights'}
+      </button>
+      {insights && <p style={{ marginTop: '1rem' }}>{insights}</p>}
     </div>
   );
 }
