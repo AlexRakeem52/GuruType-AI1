@@ -1,21 +1,19 @@
 import { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
   Tooltip,
-  Legend,
-} from 'chart.js';
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
+  ResponsiveContainer,
+  CartesianGrid,
+} from 'recharts';
 
 const guruImages = {
-  D: '/tiger.jpg',        // Dominance
-  I: '/parrot.jpg',       // Influence
-  S: '/elephant.jpg',     // Steadiness
-  C: '/fox.jpg',          // Conscientiousness
+  D: '/tiger.jpg',
+  I: '/parrot.jpg',
+  S: '/elephant.jpg',
+  C: '/fox.jpg',
 };
 
 const summaries = {
@@ -42,78 +40,82 @@ const summaries = {
 };
 
 export default function Results({ discScores }) {
-  const [topType, setTopType] = useState(null);
-  const [aiResponse, setAiResponse] = useState('');
   const types = ['D', 'I', 'S', 'C'];
-
-  useEffect(() => {
-    const scores = {
-      D: discScores[0],
-      I: discScores[1],
-      S: discScores[2],
-      C: discScores[3],
-    };
-    const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
-    const isTie = sorted[0][1] === sorted[1][1];
-    setTopType(isTie ? null : sorted[0][0]);
-
-    if (!isTie) {
-      fetch('/api/coach', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ topType: sorted[0][0] }),
-      })
-        .then(res => res.json())
-        .then(data => setAiResponse(data.message))
-        .catch(() => setAiResponse('Something went wrong. Please try again.'));
-    }
-  }, [discScores]);
-
-  const data = {
-    labels: ['Dominance', 'Influence', 'Steadiness', 'Conscientiousness'],
-    datasets: [
-      {
-        label: 'DISC Results',
-        data: discScores,
-        backgroundColor: ['#f87171', '#60a5fa', '#34d399', '#fbbf24'],
-      },
-    ],
+  const scores = {
+    D: discScores[0],
+    I: discScores[1],
+    S: discScores[2],
+    C: discScores[3],
   };
 
+  const [coachingAdvice, setCoachingAdvice] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const topType = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+
+  useEffect(() => {
+    const fetchAdvice = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('/api/coach', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            discType: topType,
+            discSummary: summaries[topType].summary,
+          }),
+        });
+
+        const data = await response.json();
+        setCoachingAdvice(data.advice || 'No advice available at the moment.');
+      } catch (error) {
+        console.error(error);
+        setCoachingAdvice('There was an error getting your advice.');
+      }
+      setLoading(false);
+    };
+
+    fetchAdvice();
+  }, [topType]);
+
+  const data = types.map((type) => ({
+    type,
+    score: scores[type],
+  }));
+
   return (
-    <div className="text-center text-white max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4">Your DISC Breakdown</h2>
-      <Bar data={data} options={{ responsive: true, plugins: { legend: { display: false } } }} />
+    <div className="bg-black text-white p-6 rounded-lg shadow-md">
+      <h2 className="text-xl font-bold mb-4">Your DISC Style Results</h2>
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart data={data}>
+          <CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+          <XAxis dataKey="type" />
+          <YAxis domain={[0, 100]} />
+          <Tooltip />
+          <Bar dataKey="score" fill="#60a5fa" />
+        </BarChart>
+      </ResponsiveContainer>
 
-      {topType ? (
-        <>
-          <img
-            src={guruImages[topType]}
-            alt={summaries[topType].title}
-            className="w-32 h-32 mx-auto mt-6 rounded-full border-4 border-white"
-          />
-          <h3 className="text-xl font-semibold mt-4">{summaries[topType].title}</h3>
-          <p className="mt-2 text-lg">{summaries[topType].summary}</p>
-
-          {aiResponse && (
-            <div className="mt-4 p-4 bg-gray-800 rounded">
-              <p className="font-semibold text-blue-400">AI Coaching Insight:</p>
-              <p className="mt-2">{aiResponse}</p>
-            </div>
-          )}
-        </>
-      ) : (
-        <p className="mt-4 text-lg">
-          You have a balanced profile across multiple DISC styles. Want a deeper breakdown? Join our waitlist!
-        </p>
-      )}
-
-      <a
-        href="#"
-        className="mt-6 inline-block bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-500 transition"
-      >
-        Join the Waitlist
-      </a>
+      <div className="text-center mt-6">
+        <img
+          src={guruImages[topType]}
+          alt={topType}
+          className="w-32 h-32 mx-auto mb-4 rounded-full border-2 border-white"
+        />
+        <h3 className="text-lg font-bold">{summaries[topType].title}</h3>
+        <p className="mb-4">{summaries[topType].summary}</p>
+        {loading ? (
+          <p className="italic text-sm text-gray-400">Loading AI coaching advice...</p>
+        ) : (
+          <p className="italic text-sm text-gray-200">{coachingAdvice}</p>
+        )}
+        <a
+          href="#"
+          className="mt-6 inline-block bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-500 transition"
+        >
+          Join the Waitlist
+        </a>
+      </div>
     </div>
   );
 }
