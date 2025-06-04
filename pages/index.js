@@ -1,109 +1,24 @@
-import { useState } from 'react';
-import Results from '../components/Results';
+// pages/index.js import { useState } from 'react'; import { useRouter } from 'next/router'; import Head from 'next/head'; import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 
-export default function Home() {
-  const [step, setStep] = useState(0);
-  const [scores, setScores] = useState({ D: 0, I: 0, S: 0, C: 0 });
-  const [showResults, setShowResults] = useState(false);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-  const questions = [
-    {
-      question: 'How do you respond to challenges?',
-      answers: [
-        { text: 'Energetic and talkative', type: 'I' },
-        { text: 'Direct and assertive', type: 'D' },
-        { text: 'Calm and supportive', type: 'S' },
-        { text: 'Analytical and precise', type: 'C' },
-      ],
-    },
-    {
-      question: 'What describes your communication style?',
-      answers: [
-        { text: 'Lively and persuasive', type: 'I' },
-        { text: 'Straightforward and firm', type: 'D' },
-        { text: 'Friendly and soft-spoken', type: 'S' },
-        { text: 'Detailed and structured', type: 'C' },
-      ],
-    },
-    {
-      question: 'How do you make decisions?',
-      answers: [
-        { text: 'Quick and goal-driven', type: 'D' },
-        { text: 'Based on feelings and harmony', type: 'S' },
-        { text: 'Influenced by others and positivity', type: 'I' },
-        { text: 'Logical and research-based', type: 'C' },
-      ],
-    },
-    {
-      question: 'How do you prefer to work?',
-      answers: [
-        { text: 'Independently with results', type: 'D' },
-        { text: 'With team harmony', type: 'S' },
-        { text: 'In a flexible, fun environment', type: 'I' },
-        { text: 'With clear systems and rules', type: 'C' },
-      ],
-    },
-    {
-      question: 'What motivates you most?',
-      answers: [
-        { text: 'Achievement and winning', type: 'D' },
-        { text: 'Security and trust', type: 'S' },
-        { text: 'Recognition and popularity', type: 'I' },
-        { text: 'Accuracy and quality', type: 'C' },
-      ],
-    },
-  ];
+export default function Home() { const router = useRouter(); const [formData, setFormData] = useState({ D: '', I: '', S: '', C: '' }); const [error, setError] = useState('');
 
-  const handleAnswer = (type) => {
-    const updatedScores = { ...scores, [type]: scores[type] + 1 };
-    setScores(updatedScores);
+const handleChange = (e) => { setFormData({ ...formData, [e.target.name]: e.target.value }); };
 
-    if (step + 1 < questions.length) {
-      setStep(step + 1);
-    } else {
-      setShowResults(true);
-    }
-  };
+const handleSubmit = (e) => { e.preventDefault(); const scores = { D: parseInt(formData.D, 10), I: parseInt(formData.I, 10), S: parseInt(formData.S, 10), C: parseInt(formData.C, 10), };
 
-  const discScores = [
-    scores['D'] * 20,
-    scores['I'] * 20,
-    scores['S'] * 20,
-    scores['C'] * 20,
-  ];
-
-  return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
-      {!showResults ? (
-        <>
-          <h1 className="text-3xl font-bold mb-6">Welcome to GuruType AI</h1>
-          <p className="mb-4 text-lg">{questions[step].question}</p>
-          <div className="space-y-2">
-            {questions[step].answers.map((answer, index) => (
-              <button
-                key={index}
-                onClick={() => handleAnswer(answer.type)}
-                className="bg-gray-800 px-6 py-2 rounded hover:bg-gray-700 transition"
-              >
-                {answer.text}
-              </button>
-            ))}
-          </div>
-        </>
-      ) : (
-        <div className="text-center max-w-md">
-          <Results discScores={discScores} />
-          <p className="mt-4 text-lg">
-            Want a full breakdown of your DISC style and coaching insights?
-          </p>
-          <a
-            href="#"
-            className="mt-4 inline-block bg-blue-600 px-6 py-2 rounded text-white hover:bg-blue-500 transition"
-          >
-            Join the Waitlist
-          </a>
-        </div>
-      )}
-    </div>
-  );
+if (Object.values(scores).some(isNaN)) {
+  setError('Please enter a number for each DISC style.');
+  return;
 }
+
+router.push({
+  pathname: '/results',
+  query: scores,
+});
+
+};
+
+return ( <div style={{ padding: 30, backgroundColor: '#111', color: '#fff', minHeight: '100vh' }}> <Head> <title>GuruType AI - DISC Quiz</title> </Head> <h1>Enter Your DISC Scores</h1> <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 20, maxWidth: 400 }}> {['D', 'I', 'S', 'C'].map((type) => ( <label key={type}> {type} Score: <input type="number" name={type} value={formData[type]} onChange={handleChange} style={{ padding: 10, fontSize: 16, width: '100%' }} /> </label> ))} {error && <p style={{ color: 'red' }}>{error}</p>} <button type="submit" style={{ padding: 12, backgroundColor: '#33b5e5', color: '#111', fontWeight: 'bold' }}> See My Results </button> </form> </div> ); }
+
