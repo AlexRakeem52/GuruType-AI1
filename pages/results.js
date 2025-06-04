@@ -1,5 +1,7 @@
-import { Bar } from 'react-chartjs-2';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { Bar } from 'react-chartjs-2';
+import axios from 'axios';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -34,6 +36,25 @@ export default function Results() {
   const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
   const [topType, topScore] = sorted[0];
 
+  const [coaching, setCoaching] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleCoachingRequest = async () => {
+    setLoading(true);
+    setCoaching('');
+    try {
+      const response = await axios.post('/api/coach', {
+        type: topType,
+        scores
+      });
+      setCoaching(response.data.message);
+    } catch (error) {
+      console.error('Coaching API error:', error);
+      setCoaching('⚠️ There was an error retrieving your coaching insight.');
+    }
+    setLoading(false);
+  };
+
   const data = {
     labels: ['D', 'I', 'S', 'C'],
     datasets: [
@@ -52,41 +73,58 @@ export default function Results() {
       title: { display: true, text: 'Your DISC Profile' }
     },
     scales: {
-      y: { beginAtZero: true, max: 5 }
+      y: { beginAtZero: true, max: 100 }
     }
   };
 
   return (
     <div style={{ padding: 30, backgroundColor: '#111', color: '#fff', minHeight: '100vh' }}>
-      <h1>Your DISC Results</h1>
-      <Bar data={data} options={options} />
+      <h1>Your DISC Style: {topType}</h1>
+      <p>{descriptions[topType]}</p>
+      <p style={{ fontStyle: 'italic' }}>{pointers[topType]}</p>
+
+      <Bar data={data} options={options} style={{ marginTop: 30 }} />
 
       <div style={{ marginTop: 40 }}>
-        <h2>Your Top Style: {topType}</h2>
-        <p>{descriptions[topType]}</p>
-        <p style={{ marginTop: 10, fontStyle: 'italic' }}>{pointers[topType]}</p>
+        <button
+          onClick={handleCoachingRequest}
+          style={{
+            backgroundColor: '#fff',
+            color: '#000',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: 6,
+            fontWeight: 'bold',
+            cursor: 'pointer'
+          }}
+        >
+          {loading ? 'Getting Insight...' : 'Get My Coaching Insights'}
+        </button>
 
-        <div style={{ marginTop: 40 }}>
-          <h3>Want your own AI coach built for your DISC style?</h3>
-          <p>We’re building something powerful. Join the waitlist to be first in line.</p>
-          <a
-            href="https://gurutypeai.carrd.co" // Change this to your actual waitlist URL
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-block',
-              marginTop: 20,
-              padding: '12px 24px',
-              backgroundColor: '#33b5e5',
-              color: '#111',
-              borderRadius: 6,
-              fontWeight: 'bold',
-              textDecoration: 'none'
-            }}
-          >
-            Join the Waitlist
-          </a>
-        </div>
+        {coaching && (
+          <p style={{ marginTop: 20, fontSize: 16 }}>{coaching}</p>
+        )}
+      </div>
+
+      <div style={{ marginTop: 50 }}>
+        <h3>Want a full breakdown of your DISC style and coaching insights?</h3>
+        <a
+          href="https://gurutypeai.carrd.co"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'inline-block',
+            marginTop: 10,
+            padding: '10px 20px',
+            backgroundColor: '#33b5e5',
+            color: '#111',
+            borderRadius: 6,
+            fontWeight: 'bold',
+            textDecoration: 'none'
+          }}
+        >
+          Join the Waitlist
+        </a>
       </div>
     </div>
   );
