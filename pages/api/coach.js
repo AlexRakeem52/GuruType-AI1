@@ -24,11 +24,11 @@ export default async function handler(req, res) {
       messages: [
         {
           role: 'system',
-          content: `You are a DISC personality coach. Based on the DISC type and scores, provide tailored coaching insights in a friendly, empowering tone. Be concise (under 200 words).`,
+          content: 'You are a DISC personality coach. Provide short, personalized coaching insights for a user based on their DISC type and score breakdown.',
         },
         {
           role: 'user',
-          content: `DISC Type: ${type}\nScores: ${JSON.stringify(scores)}\nGive a coaching insight for this profile.`,
+          content: `DISC Type: ${type}\nScores: ${JSON.stringify(scores)}\nGenerate a personalized coaching insight.`,
         },
       ],
       temperature: 0.7,
