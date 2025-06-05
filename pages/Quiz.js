@@ -1,65 +1,90 @@
 // pages/quiz.js
+import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 
-export default function Quiz() {
-  const router = useRouter();
-  const { role } = router.query;
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    if (role) {
-      setLoaded(true);
+const questions = [
+  {
+    prompt: "In a team setting, you are most likely to:",
+    options: {
+      D: "Take charge and set direction",
+      I: "Motivate and inspire others",
+      S: "Support and cooperate",
+      C: "Ensure everything is done correctly"
     }
-  }, [role]);
+  },
+  {
+    prompt: "When facing a challenge, your instinct is to:",
+    options: {
+      D: "Conquer it head-on",
+      I: "Talk through it with others",
+      S: "Stay calm and patient",
+      C: "Analyze all the details first"
+    }
+  },
+  {
+    prompt: "You prefer work that is:",
+    options: {
+      D: "Fast-paced and results-driven",
+      I: "Social and engaging",
+      S: "Stable and predictable",
+      C: "Structured and detailed"
+    }
+  },
+  {
+    prompt: "In conversation, you tend to:",
+    options: {
+      D: "Get to the point quickly",
+      I: "Tell stories and joke around",
+      S: "Listen more than talk",
+      C: "Be precise and careful with words"
+    }
+  },
+  // Add more questions as needed (you can go up to 12 total)
+];
 
-  if (!loaded) return <p style={styles.loading}>Loading...</p>;
+export default function QuizPage() {
+  const router = useRouter();
+  const [current, setCurrent] = useState(0);
+  const [scores, setScores] = useState({ D: 0, I: 0, S: 0, C: 0 });
+
+  const handleAnswer = (type) => {
+    setScores(prev => ({ ...prev, [type]: prev[type] + 1 }));
+    if (current + 1 < questions.length) {
+      setCurrent(current + 1);
+    } else {
+      // Go to results with query parameters
+      router.push({
+        pathname: '/results',
+        query: scores
+      });
+    }
+  };
+
+  const q = questions[current];
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Welcome, {capitalize(role)}!</h1>
-      <p style={styles.description}>
-        Take our quick DISC assessment to discover your unique personality style and coaching insights.
-      </p>
-
-      <button style={styles.button} onClick={() => router.push('/results')}>
-        Start the Demo Quiz
-      </button>
+    <div style={{ padding: 20 }}>
+      <h1>DISC Quiz</h1>
+      <h3>{q.prompt}</h3>
+      <div>
+        {Object.entries(q.options).map(([key, text]) => (
+          <button
+            key={key}
+            onClick={() => handleAnswer(key)}
+            style={{
+              margin: 10,
+              padding: 12,
+              backgroundColor: '#f0f0f0',
+              border: '1px solid #ccc',
+              borderRadius: 6,
+              cursor: 'pointer'
+            }}
+          >
+            {text}
+          </button>
+        ))}
+      </div>
+      <p>Question {current + 1} of {questions.length}</p>
     </div>
   );
 }
-
-const capitalize = (word) => word?.charAt(0).toUpperCase() + word?.slice(1);
-
-const styles = {
-  container: {
-    backgroundColor: '#111',
-    color: '#fff',
-    minHeight: '100vh',
-    padding: '2rem',
-    textAlign: 'center'
-  },
-  title: {
-    fontSize: '2rem',
-    marginBottom: '1rem'
-  },
-  description: {
-    fontSize: '1.1rem',
-    marginBottom: '2rem'
-  },
-  button: {
-    padding: '12px 24px',
-    backgroundColor: '#33b5e5',
-    color: '#111',
-    border: 'none',
-    borderRadius: '6px',
-    fontWeight: 'bold',
-    cursor: 'pointer',
-    fontSize: '1rem'
-  },
-  loading: {
-    textAlign: 'center',
-    marginTop: '2rem',
-    color: '#fff'
-  }
-};
