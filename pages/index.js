@@ -1,24 +1,17 @@
 // pages/index.js
-import { useRouter } from 'next/router';
+
+import Link from 'next/link';
 
 export default function Home() {
-  const router = useRouter();
-
-  const handleSelect = (role) => {
-    router.push(`/quiz?role=${role}`);
-  };
-
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>Welcome to GuruType AI</h1>
-      <p style={styles.subtitle}>Discover your DISC style and unlock personalized coaching insights.</p>
-      <p style={styles.question}>Are you an...</p>
-
-      <div style={styles.buttons}>
-        <button onClick={() => handleSelect('individual')} style={styles.button}>Individual</button>
-        <button onClick={() => handleSelect('coach')} style={styles.button}>Coach</button>
-        <button onClick={() => handleSelect('organization')} style={styles.button}>Organization</button>
-      </div>
+      <h1 style={styles.title}>Discover Your DISC Personality</h1>
+      <p style={styles.subtitle}>
+        Unlock personalized insights for individuals, coaches, and organizations. GuruType AI blends personality science with AI-driven coaching to help you grow faster and smarter.
+      </p>
+      <Link href="/role">
+        <a style={styles.button}>Take the Demo</a>
+      </Link>
     </div>
   );
 }
@@ -28,35 +21,27 @@ const styles = {
     backgroundColor: '#111',
     color: '#fff',
     minHeight: '100vh',
-    padding: '2rem',
+    padding: '80px 30px',
     textAlign: 'center'
   },
   title: {
     fontSize: '2.5rem',
-    marginBottom: '1rem'
+    marginBottom: '20px'
   },
   subtitle: {
     fontSize: '1.2rem',
-    marginBottom: '2rem'
-  },
-  question: {
-    fontSize: '1.5rem',
-    marginBottom: '1.5rem'
-  },
-  buttons: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: '1rem',
-    flexWrap: 'wrap'
+    maxWidth: '600px',
+    margin: '0 auto 40px auto'
   },
   button: {
-    padding: '12px 24px',
+    padding: '15px 30px',
+    fontSize: '1.1rem',
     backgroundColor: '#33b5e5',
     color: '#111',
     border: 'none',
-    borderRadius: '6px',
+    borderRadius: '8px',
+    textDecoration: 'none',
     fontWeight: 'bold',
-    cursor: 'pointer',
-    fontSize: '1rem'
+    cursor: 'pointer'
   }
 };
