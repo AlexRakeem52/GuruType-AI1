@@ -1,55 +1,65 @@
 // pages/quiz.js
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Quiz() {
   const router = useRouter();
   const { role } = router.query;
-  const [scores, setScores] = useState({ D: 0, I: 0, S: 0, C: 0 });
+  const [loaded, setLoaded] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const query = new URLSearchParams({
-      D: scores.D,
-      I: scores.I,
-      S: scores.S,
-      C: scores.C,
-      role: role || 'individual',
-    }).toString();
-    router.push(`/results?${query}`);
-  };
+  useEffect(() => {
+    if (role) {
+      setLoaded(true);
+    }
+  }, [role]);
+
+  if (!loaded) return <p style={styles.loading}>Loading...</p>;
 
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#111', color: '#fff', minHeight: '100vh' }}>
-      <h1>Take the DISC Quiz</h1>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: 400 }}>
-        {['D', 'I', 'S', 'C'].map((letter) => (
-          <label key={letter}>
-            {letter} Score:
-            <input
-              type="number"
-              min="0"
-              max="5"
-              value={scores[letter]}
-              onChange={(e) => setScores({ ...scores, [letter]: Number(e.target.value) })}
-              style={{ marginLeft: 10 }}
-              required
-            />
-          </label>
-        ))}
-        <button type="submit" style={buttonStyle}>See My Results</button>
-      </form>
+    <div style={styles.container}>
+      <h1 style={styles.title}>Welcome, {capitalize(role)}!</h1>
+      <p style={styles.description}>
+        Take our quick DISC assessment to discover your unique personality style and coaching insights.
+      </p>
+
+      <button style={styles.button} onClick={() => router.push('/results')}>
+        Start the Demo Quiz
+      </button>
     </div>
   );
 }
 
-const buttonStyle = {
-  padding: '12px 24px',
-  backgroundColor: '#33b5e5',
-  color: '#111',
-  border: 'none',
-  borderRadius: '6px',
-  fontWeight: 'bold',
-  cursor: 'pointer',
-  fontSize: '1rem',
+const capitalize = (word) => word?.charAt(0).toUpperCase() + word?.slice(1);
+
+const styles = {
+  container: {
+    backgroundColor: '#111',
+    color: '#fff',
+    minHeight: '100vh',
+    padding: '2rem',
+    textAlign: 'center'
+  },
+  title: {
+    fontSize: '2rem',
+    marginBottom: '1rem'
+  },
+  description: {
+    fontSize: '1.1rem',
+    marginBottom: '2rem'
+  },
+  button: {
+    padding: '12px 24px',
+    backgroundColor: '#33b5e5',
+    color: '#111',
+    border: 'none',
+    borderRadius: '6px',
+    fontWeight: 'bold',
+    cursor: 'pointer',
+    fontSize: '1rem'
+  },
+  loading: {
+    textAlign: 'center',
+    marginTop: '2rem',
+    color: '#fff'
+  }
 };
