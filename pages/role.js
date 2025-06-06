@@ -9,10 +9,27 @@ export default function RolePage() {
   };
 
   return (
-    <div style={{ padding: '2rem', backgroundColor: '#111', color: '#fff', minHeight: '100vh' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      textAlign: 'center',
+      backgroundColor: '#111',
+      color: '#fff',
+      height: '100vh',
+      padding: '2rem'
+    }}>
       <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Who are you?</h1>
       <p style={{ marginBottom: '2rem' }}>Choose your role to get started with your personalized DISC demo:</p>
-      <div style={{ display: 'flex', gap: '1rem' }}>
+
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        width: '100%',
+        maxWidth: '300px'
+      }}>
         <button onClick={() => handleSelect('individual')} style={btnStyle}>Individual</button>
         <button onClick={() => handleSelect('coach')} style={btnStyle}>Coach</button>
         <button onClick={() => handleSelect('organization')} style={btnStyle}>Organization</button>
@@ -29,4 +46,5 @@ const btnStyle = {
   borderRadius: 6,
   fontWeight: 'bold',
   cursor: 'pointer',
+  width: '100%'
 };
