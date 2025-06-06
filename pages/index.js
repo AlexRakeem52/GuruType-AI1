@@ -1,72 +1,81 @@
-import Image from 'next/image'; import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
+import Image from 'next/image';
+import Head from 'next/head';
 
-export default function HomePage() { const router = useRouter();
+export default function Home() {
+  const router = useRouter();
 
-const handleStartDemo = () => { router.push('/role'); };
+  const handleDemoClick = () => {
+    router.push('/role');
+  };
 
-return ( <div style={{ backgroundColor: '#111', color: '#fff', fontFamily: 'sans-serif', padding: '2rem' }}> {/* Hero Section */} <section style={{ textAlign: 'center', marginBottom: '4rem' }}> <Image src="/gurutype-logo.png" alt="GuruType AI Logo" width={160} height={160} /> <h1 style={{ fontSize: '2.5rem', marginTop: '1rem' }}>Meet Your Personalized AI Coach</h1> <p style={{ maxWidth: '700px', margin: '1rem auto', fontSize: '1.1rem' }}> GuruType AI delivers DISC-powered coaching tailored to your personality. Whether you’re an individual, coach, or team leader—get real-time insights, guidance, and growth paths from your own AI guru. </p> <button onClick={handleStartDemo} style={{ marginTop: '1.5rem', padding: '0.75rem 1.5rem', backgroundColor: '#6e00ff', border: 'none', borderRadius: '8px', color: '#fff', fontSize: '1rem', cursor: 'pointer', }} > Take the Free Demo </button> </section>
+  return (
+    <>
+      <Head>
+        <title>GuruType AI - Personalized DISC Coaching</title>
+        <meta name="description" content="Get AI-powered DISC coaching tailored to your personality. Ideal for individuals, coaches, and organizations." />
+      </Head>
 
-{/* Features */}
-  <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '2rem', textAlign: 'center', marginBottom: '4rem' }}>
-    <div>
-      <h3 style={{ color: '#ff4444' }}>Individuals</h3>
-      <p>Understand your core behavior style and unlock daily guidance from your AI coach—designed just for you.</p>
-    </div>
-    <div>
-      <h3 style={{ color: '#00C851' }}>Coaches</h3>
-      <p>Level up your sessions with data-driven insights, custom dashboards, and white-label AI support.</p>
-    </div>
-    <div>
-      <h3 style={{ color: '#33b5e5' }}>Organizations</h3>
-      <p>Boost team performance with DISC analytics, talent development tools, and scalable coaching flows.</p>
-    </div>
-  </section>
+      <main style={{ backgroundColor: '#0e0e0e', color: '#fff', fontFamily: 'sans-serif', padding: '2rem' }}>
+        {/* Hero Section */}
+        <section style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+          <Image src="/GuruTypeLogo.png" alt="GuruType AI Logo" width={180} height={60} />
+          <h1 style={{ fontSize: '2.5rem', margin: '1.5rem 0' }}>Meet Your Personalized AI Coach</h1>
+          <p style={{ fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto 2rem' }}>
+            GuruType AI delivers intelligent coaching based on your DISC personality style. Whether you're an individual looking to grow, a coach scaling your impact, or an organization building better teams — we’ve built something for you.
+          </p>
+          <button onClick={handleDemoClick} style={{ padding: '1rem 2rem', fontSize: '1rem', backgroundColor: '#33b5e5', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+            Take the Free Demo
+          </button>
+        </section>
 
-  {/* Meet the Coaches */}
-  <section style={{ textAlign: 'center', marginBottom: '4rem' }}>
-    <h2>Meet Your AI Coaching Avatars</h2>
-    <p>Each coach is styled to your DISC profile. Who will you get?</p>
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', marginTop: '2rem' }}>
-      <div>
-        <Image src="/fox.png" alt="Fox Coach" width={160} height={160} />
-        <p>Fox (C-Type)</p>
-      </div>
-      <div>
-        <Image src="/elephant.png" alt="Elephant Coach" width={160} height={160} />
-        <p>Elephant (S-Type)</p>
-      </div>
-      <div>
-        <Image src="/parrot.png" alt="Parrot Coach" width={160} height={160} />
-        <p>Parrot (I-Type)</p>
-      </div>
-      <div>
-        <Image src="/tiger.png" alt="Tiger Coach" width={160} height={160} />
-        <p>Tiger (D-Type)</p>
-      </div>
-    </div>
-  </section>
+        {/* Value Props Section */}
+        <section style={{ display: 'grid', gap: '2rem', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', maxWidth: '1000px', margin: '4rem auto' }}>
+          <div style={{ background: '#1a1a1a', padding: '1.5rem', borderRadius: '10px' }}>
+            <h3>✨ Personalized AI Coaching</h3>
+            <p>Each user gets tailored coaching based on their DISC type. No two journeys are alike.</p>
+          </div>
+          <div style={{ background: '#1a1a1a', padding: '1.5rem', borderRadius: '10px' }}>
+            <h3>📊 Team & Org Dashboards</h3>
+            <p>For leaders and HR teams — view collective insights, trends, and growth paths by DISC profile.</p>
+          </div>
+          <div style={{ background: '#1a1a1a', padding: '1.5rem', borderRadius: '10px' }}>
+            <h3>📚 Growth Plans & Reports</h3>
+            <p>We don’t just assess. GuruType builds a real plan for your growth, delivered by your AI coach.</p>
+          </div>
+        </section>
 
-  {/* Final CTA */}
-  <section style={{ textAlign: 'center', padding: '2rem 0', backgroundColor: '#1c1c1c', borderRadius: '12px' }}>
-    <h2 style={{ marginBottom: '0.5rem' }}>Start Your Journey with GuruType AI</h2>
-    <p>Take the quiz. Discover your style. Unlock your AI coach.</p>
-    <button
-      onClick={handleStartDemo}
-      style={{
-        marginTop: '1rem',
-        padding: '0.75rem 1.5rem',
-        backgroundColor: '#6e00ff',
-        border: 'none',
-        borderRadius: '8px',
-        color: '#fff',
-        fontSize: '1rem',
-        cursor: 'pointer',
-      }}
-    >
-      Take the Free Demo
-    </button>
-  </section>
-</div>
+        {/* Meet the Avatars */}
+        <section style={{ textAlign: 'center', marginTop: '5rem' }}>
+          <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Meet Your Guru Avatars</h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '2rem' }}>
+            <div>
+              <Image src="/TigerGuru.png" alt="Tiger Guru" width={120} height={120} />
+              <p style={{ marginTop: '0.5rem' }}><strong>Tiger</strong> (D Style)</p>
+            </div>
+            <div>
+              <Image src="/ParrotGuru.png" alt="Parrot Guru" width={120} height={120} />
+              <p style={{ marginTop: '0.5rem' }}><strong>Parrot</strong> (I Style)</p>
+            </div>
+            <div>
+              <Image src="/ElephantGuru.png" alt="Elephant Guru" width={120} height={120} />
+              <p style={{ marginTop: '0.5rem' }}><strong>Elephant</strong> (S Style)</p>
+            </div>
+            <div>
+              <Image src="/FoxGuru.png" alt="Fox Guru" width={120} height={120} />
+              <p style={{ marginTop: '0.5rem' }}><strong>Fox</strong> (C Style)</p>
+            </div>
+          </div>
+        </section>
 
-); }
-
+        {/* CTA Section */}
+        <section style={{ textAlign: 'center', marginTop: '6rem', paddingBottom: '4rem' }}>
+          <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Ready to see your DISC Coach in action?</h2>
+          <button onClick={handleDemoClick} style={{ padding: '1rem 2rem', fontSize: '1rem', backgroundColor: '#33b5e5', color: '#000', border: 'none', borderRadius: '8px', cursor: 'pointer' }}>
+            Start Your Free Demo
+          </button>
+        </section>
+      </main>
+    </>
+  );
+}
