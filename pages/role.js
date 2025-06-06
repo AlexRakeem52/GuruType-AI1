@@ -1,4 +1,4 @@
-// pages/Role.js
+// pages/role.js
 import { useRouter } from 'next/router';
 
 export default function RolePage() {
