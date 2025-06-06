@@ -1,58 +1,49 @@
 // pages/quiz.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 const questions = [
-  {
-    prompt: "In a team setting, you are most likely to:",
-    options: {
-      D: "Take charge and set direction",
-      I: "Motivate and inspire others",
-      S: "Support and cooperate",
-      C: "Ensure everything is done correctly"
-    }
-  },
-  {
-    prompt: "When facing a challenge, your instinct is to:",
-    options: {
-      D: "Conquer it head-on",
-      I: "Talk through it with others",
-      S: "Stay calm and patient",
-      C: "Analyze all the details first"
-    }
-  },
-  {
-    prompt: "You prefer work that is:",
-    options: {
-      D: "Fast-paced and results-driven",
-      I: "Social and engaging",
-      S: "Stable and predictable",
-      C: "Structured and detailed"
-    }
-  },
-  {
-    prompt: "In conversation, you tend to:",
-    options: {
-      D: "Get to the point quickly",
-      I: "Tell stories and joke around",
-      S: "Listen more than talk",
-      C: "Be precise and careful with words"
-    }
-  },
-  // Add more questions as needed (you can go up to 12 total)
+  { text: "I prefer to take charge in group situations.", type: 'D' },
+  { text: "I enjoy meeting new people and socializing.", type: 'I' },
+  { text: "I value stability and avoid sudden changes.", type: 'S' },
+  { text: "I pay attention to details and accuracy.", type: 'C' },
+  { text: "I make decisions quickly and confidently.", type: 'D' },
+  { text: "I like to encourage and motivate others.", type: 'I' },
+  { text: "I remain calm and patient under pressure.", type: 'S' },
+  { text: "I double-check my work for perfection.", type: 'C' },
+  { text: "I challenge the status quo when needed.", type: 'D' },
+  { text: "I enjoy being the center of attention.", type: 'I' },
+  { text: "I strive to maintain harmony around me.", type: 'S' },
+  { text: "I stick to rules and logical systems.", type: 'C' }
 ];
 
-export default function QuizPage() {
+// DISC colors
+const discColors = {
+  D: '#ff4444',
+  I: '#ffbb33',
+  S: '#00C851',
+  C: '#33b5e5'
+};
+
+export default function Quiz() {
   const router = useRouter();
+  const [shuffled, setShuffled] = useState([]);
   const [current, setCurrent] = useState(0);
   const [scores, setScores] = useState({ D: 0, I: 0, S: 0, C: 0 });
 
-  const handleAnswer = (type) => {
-    setScores(prev => ({ ...prev, [type]: prev[type] + 1 }));
-    if (current + 1 < questions.length) {
-      setCurrent(current + 1);
+  useEffect(() => {
+    setShuffled(questions.sort(() => 0.5 - Math.random()));
+  }, []);
+
+  const handleAnswer = (agree) => {
+    const type = shuffled[current].type;
+    if (agree) {
+      setScores((prev) => ({ ...prev, [type]: prev[type] + 1 }));
+    }
+    const next = current + 1;
+    if (next < shuffled.length) {
+      setCurrent(next);
     } else {
-      // Go to results with query parameters
       router.push({
         pathname: '/results',
         query: scores
@@ -60,31 +51,92 @@ export default function QuizPage() {
     }
   };
 
-  const q = questions[current];
+  const handleBack = () => {
+    if (current > 0) {
+      setCurrent(current - 1);
+    }
+  };
+
+  if (shuffled.length === 0) return <p>Loading...</p>;
+
+  const q = shuffled[current];
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>DISC Quiz</h1>
-      <h3>{q.prompt}</h3>
-      <div>
-        {Object.entries(q.options).map(([key, text]) => (
-          <button
-            key={key}
-            onClick={() => handleAnswer(key)}
+    <div style={{ padding: 30, backgroundColor: '#111', color: '#fff', minHeight: '100vh' }}>
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ height: 10, backgroundColor: '#333', borderRadius: 5 }}>
+          <div
             style={{
-              margin: 10,
-              padding: 12,
-              backgroundColor: '#f0f0f0',
-              border: '1px solid #ccc',
-              borderRadius: 6,
-              cursor: 'pointer'
+              width: `${((current + 1) / shuffled.length) * 100}%`,
+              backgroundColor: discColors[q.type],
+              height: '100%',
+              borderRadius: 5
+            }}
+          />
+        </div>
+        <p style={{ marginTop: 10 }}>
+          Question {current + 1} of {shuffled.length}
+        </p>
+      </div>
+
+      <div
+        style={{
+          backgroundColor: '#222',
+          padding: 24,
+          borderRadius: 12,
+          borderLeft: `6px solid ${discColors[q.type]}`,
+          marginBottom: 20
+        }}
+      >
+        <h2 style={{ fontSize: 22 }}>{q.text}</h2>
+      </div>
+
+      <div style={{ display: 'flex', gap: 15, flexWrap: 'wrap' }}>
+        <button
+          onClick={() => handleAnswer(true)}
+          style={{
+            padding: '12px 24px',
+            backgroundColor: discColors[q.type],
+            color: '#111',
+            border: 'none',
+            borderRadius: 8,
+            fontWeight: 'bold',
+            minWidth: 120
+          }}
+        >
+          Agree 👍
+        </button>
+
+        <button
+          onClick={() => handleAnswer(false)}
+          style={{
+            padding: '12px 24px',
+            backgroundColor: '#555',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 8,
+            minWidth: 120
+          }}
+        >
+          Disagree 👎
+        </button>
+
+        {current > 0 && (
+          <button
+            onClick={handleBack}
+            style={{
+              padding: '12px 24px',
+              backgroundColor: '#888',
+              color: '#fff',
+              border: 'none',
+              borderRadius: 8,
+              minWidth: 120
             }}
           >
-            {text}
+            ⬅ Back
           </button>
-        ))}
+        )}
       </div>
-      <p>Question {current + 1} of {questions.length}</p>
     </div>
   );
 }
