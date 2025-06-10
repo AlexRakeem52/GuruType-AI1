@@ -1,4 +1,4 @@
-1// pages/results.js import { useState } from 'react'; import { useRouter } from 'next/router'; import Image from 'next/image';
+// pages/results.js import { useState } from 'react'; import { useRouter } from 'next/router'; import Image from 'next/image';
 
 export default function ResultsPage() { const router = useRouter(); const { type, scores } = router.query; const [insight, setInsight] = useState(''); const [loading, setLoading] = useState(false); const [showForm, setShowForm] = useState(false);
 
