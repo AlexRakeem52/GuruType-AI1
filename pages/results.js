@@ -89,4 +89,4 @@ export default function ResultsPage() {
             marginTop: '2rem',
             backgroundColor: '#222',
             padding: '1rem',
-            borderRadius: '8
+            borderRadius: '8px'
