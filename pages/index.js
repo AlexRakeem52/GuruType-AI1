@@ -1,58 +1,100 @@
-import Link from 'next/link'; import Head from 'next/head';
+import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
 
-export default function Home() { return ( <div style={{ backgroundColor: '#1e1b2e', color: '#f3f0ff', fontFamily: 'Segoe UI, Roboto, sans-serif', minHeight: '100vh', padding: '2rem' }}> <Head> <title>GuruType AI - DISC-Powered Coaching</title> <meta name="description" content="Personalized AI Coaching Powered by DISC" /> </Head>
+export default function Home() {
+  return (
+    <>
+      <Head>
+        <title>GuruType AI – Personalized AI Coaching</title>
+      </Head>
 
-<header style={{ textAlign: 'center', marginBottom: '2rem' }}>
-    <img src="/logo.png" alt="GuruType AI Logo" style={{ height: '100px', margin: '0 auto' }} />
-    <h1 style={{ fontSize: '2.5rem', color: '#66f' }}>
-      Your Personalized AI Coach Based on DISC
-    </h1>
-    <p style={{ maxWidth: '600px', margin: '1rem auto' }}>
-      Get instant insights, custom coaching, and unlock your potential—whether you're an individual, a team leader, or an organization.
-    </p>
-    <Link href="/role">
-      <button style={{ backgroundColor: '#66f', color: '#fff', padding: '0.75rem 2rem', fontSize: '1rem', borderRadius: '8px', border: 'none', cursor: 'pointer', marginTop: '1rem' }}>
-        Take the Free Demo
-      </button>
-    </Link>
-  </header>
+      <main style={{ backgroundColor: '#0f0f0f', color: '#ffffff', padding: '2rem', fontFamily: 'sans-serif' }}>
+        {/* Logo */}
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <Image src="/logo.png" alt="GuruType AI Logo" width={180} height={60} />
+        </div>
 
-  <section style={{ textAlign: 'center', marginBottom: '3rem' }}>
-    <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem' }}>Meet Your AI Coaches</h2>
-    <p style={{ marginBottom: '2rem' }}>
-      Each coach represents a DISC style, delivering insights tailored to your personality.
-    </p>
-    <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
-      <div style={{ textAlign: 'center' }}>
-        <img src="/tiger.png" alt="Tiger - D" style={{ height: '100px', borderRadius: '10px' }} />
-        <p><strong>Dominance (Tiger)</strong></p>
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <img src="/parrot.png" alt="Parrot - I" style={{ height: '100px', borderRadius: '10px' }} />
-        <p><strong>Influence (Parrot)</strong></p>
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <img src="/elephant.png" alt="Elephant - S" style={{ height: '100px', borderRadius: '10px' }} />
-        <p><strong>Steadiness (Elephant)</strong></p>
-      </div>
-      <div style={{ textAlign: 'center' }}>
-        <img src="/fox.png" alt="Fox - C" style={{ height: '100px', borderRadius: '10px' }} />
-        <p><strong>Conscientiousness (Fox)</strong></p>
-      </div>
-    </div>
-  </section>
+        {/* Hero */}
+        <section style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold' }}>Meet Your AI Coach Built Just for You</h1>
+          <p style={{ maxWidth: '600px', margin: '1rem auto', fontSize: '1.2rem', color: '#cccccc' }}>
+            Unlock personalized growth insights through DISC-powered AI coaching – whether you're an individual,
+            coach, or organization.
+          </p>
+          <Link href="/role">
+            <a style={{
+              marginTop: '1.5rem',
+              padding: '0.75rem 1.5rem',
+              backgroundColor: '#33b5e5',
+              color: '#111',
+              fontWeight: 'bold',
+              borderRadius: '6px',
+              textDecoration: 'none',
+              display: 'inline-block'
+            }}>
+              Take the Demo
+            </a>
+          </Link>
+        </section>
 
-  <section style={{ backgroundColor: '#292542', padding: '2rem', borderRadius: '10px', margin: '0 auto', maxWidth: '800px' }}>
-    <h2 style={{ fontSize: '1.8rem', marginBottom: '1rem', textAlign: 'center' }}>Why GuruType AI?</h2>
-    <ul style={{ listStyleType: '✅', paddingLeft: '1.5rem', lineHeight: '1.8' }}>
-      <li>Personalized AI coaching based on your DISC profile</li>
-      <li>Insightful growth tips for individuals and teams</li>
-      <li>Real-time DISC insights for hiring, leadership, and communication</li>
-      <li>Custom dashboards for organizations and coaches</li>
-      <li>Automated reports and guided next steps</li>
-    </ul>
-  </section>
-</div>
+        {/* Meet the AI Coaches */}
+        <section style={{ textAlign: 'center', marginBottom: '3rem' }}>
+          <h2 style={{ fontSize: '2rem', marginBottom: '1.5rem' }}>Meet Your DISC Style Coaches</h2>
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1rem' }}>
+            <Image src="/coach-d.png" alt="D Style Coach" width={120} height={120} />
+            <Image src="/coach-i.png" alt="I Style Coach" width={120} height={120} />
+            <Image src="/coach-s.png" alt="S Style Coach" width={120} height={120} />
+            <Image src="/coach-c.png" alt="C Style Coach" width={120} height={120} />
+          </div>
+        </section>
 
-); }
+        {/* Features */}
+        <section style={{ maxWidth: '700px', margin: '0 auto 3rem' }}>
+          <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Why GuruType AI?</h2>
+          <ul style={{ listStyle: 'none', padding: 0, fontSize: '1.1rem', color: '#cccccc' }}>
+            <li>✅ AI-powered coaching tailored to your DISC personality</li>
+            <li>✅ Personalized growth plans for individuals</li>
+            <li>✅ Team dashboards & insights for coaches and orgs</li>
+            <li>✅ Actionable reports, visual breakdowns, and development tracking</li>
+          </ul>
+        </section>
 
+        {/* Waitlist Signup */}
+        <section style={{ maxWidth: '600px', margin: '0 auto', backgroundColor: '#1c1c1c', padding: '2rem', borderRadius: '8px' }}>
+          <h2 style={{ textAlign: 'center', marginBottom: '1rem' }}>Join the Waitlist</h2>
+          <form action="https://formspree.io/f/xqabpnnn" method="POST" style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <label>
+              Name:
+              <input type="text" name="name" required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px' }} />
+            </label>
+            <label>
+              Email:
+              <input type="email" name="email" required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px' }} />
+            </label>
+            <label>
+              Role:
+              <select name="role" required style={{ width: '100%', padding: '0.5rem', borderRadius: '4px' }}>
+                <option value="">Select your role</option>
+                <option value="individual">Individual</option>
+                <option value="coach">Coach</option>
+                <option value="organization">Organization</option>
+              </select>
+            </label>
+            <button type="submit" style={{
+              backgroundColor: '#33b5e5',
+              color: '#111',
+              fontWeight: 'bold',
+              padding: '0.75rem',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer'
+            }}>
+              Submit
+            </button>
+          </form>
+        </section>
+      </main>
+    </>
+  );
+}
