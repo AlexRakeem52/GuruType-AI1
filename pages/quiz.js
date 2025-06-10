@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import Logo from '../public/logo.png';
 
 const questions = [
-  // Same 12 questions here...
   {
     text: 'How do you usually approach a new challenge?',
     options: [
@@ -14,7 +13,105 @@ const questions = [
       { text: 'Analyze and plan carefully', type: 'C' }
     ]
   },
-  //... continue with rest of your 12 questions
+  {
+    text: 'In group settings, you tend to...',
+    options: [
+      { text: 'Command attention and take the lead', type: 'D' },
+      { text: 'Connect and keep the energy up', type: 'I' },
+      { text: 'Support others and keep harmony', type: 'S' },
+      { text: 'Observe and evaluate before acting', type: 'C' }
+    ]
+  },
+  {
+    text: 'When making decisions, you rely on...',
+    options: [
+      { text: 'Your instincts and assertiveness', type: 'D' },
+      { text: 'How it will affect relationships', type: 'I' },
+      { text: 'What feels safest and most secure', type: 'S' },
+      { text: 'Facts, logic, and evidence', type: 'C' }
+    ]
+  },
+  {
+    text: 'How do you respond to conflict?',
+    options: [
+      { text: 'Confront it head-on', type: 'D' },
+      { text: 'Use humor or charm to defuse it', type: 'I' },
+      { text: 'Try to mediate and resolve quietly', type: 'S' },
+      { text: 'Withdraw to analyze the situation', type: 'C' }
+    ]
+  },
+  {
+    text: 'Your ideal work environment is...',
+    options: [
+      { text: 'Fast-paced and competitive', type: 'D' },
+      { text: 'Lively and socially engaging', type: 'I' },
+      { text: 'Stable and team-oriented', type: 'S' },
+      { text: 'Structured and detail-focused', type: 'C' }
+    ]
+  },
+  {
+    text: 'When someone disagrees with you, you usually...',
+    options: [
+      { text: 'Hold your ground', type: 'D' },
+      { text: 'Talk it through openly', type: 'I' },
+      { text: 'Look for compromise', type: 'S' },
+      { text: 'Re-examine the data', type: 'C' }
+    ]
+  },
+  {
+    text: 'How do you stay organized?',
+    options: [
+      { text: 'Prioritize tasks quickly and move fast', type: 'D' },
+      { text: 'Use visual reminders and notes', type: 'I' },
+      { text: 'Stick to a consistent routine', type: 'S' },
+      { text: 'Create detailed checklists and schedules', type: 'C' }
+    ]
+  },
+  {
+    text: 'What motivates you the most?',
+    options: [
+      { text: 'Achieving big goals', type: 'D' },
+      { text: 'Being recognized and appreciated', type: 'I' },
+      { text: 'Helping others and being dependable', type: 'S' },
+      { text: 'Solving problems and gaining knowledge', type: 'C' }
+    ]
+  },
+  {
+    text: 'How do you handle change?',
+    options: [
+      { text: 'Embrace it quickly and push forward', type: 'D' },
+      { text: 'Get excited and inspire others', type: 'I' },
+      { text: 'Adjust slowly with caution', type: 'S' },
+      { text: 'Evaluate the risks and prepare thoroughly', type: 'C' }
+    ]
+  },
+  {
+    text: 'What role do you play in a team?',
+    options: [
+      { text: 'Take the lead and delegate', type: 'D' },
+      { text: 'Keep morale high and connect people', type: 'I' },
+      { text: 'Support and bring balance', type: 'S' },
+      { text: 'Ensure quality and accuracy', type: 'C' }
+    ]
+  },
+  {
+    text: 'When facing a deadline, you...',
+    options: [
+      { text: 'Take control and drive results', type: 'D' },
+      { text: 'Get creative and rally support', type: 'I' },
+      { text: 'Stick to your plan and work steadily', type: 'S' },
+      { text: 'Double-check every detail', type: 'C' }
+    ]
+  },
+  {
+    text: 'How do you prefer to communicate?',
+    options: [
+      { text: 'Direct and to the point', type: 'D' },
+      { text: 'Lively and expressive', type: 'I' },
+      { text: 'Warm and thoughtful', type: 'S' },
+      { text: 'Clear and factual', type: 'C' }
+    ]
+  }
 ];
 
 function shuffleOptions(options) {
@@ -49,7 +146,7 @@ export default function Quiz() {
           },
         });
       }
-    }, 300); // matches animation duration
+    }, 300);
   };
 
   const handleBack = () => {
