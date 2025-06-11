@@ -1,4 +1,4 @@
-1import Image from 'next/image'; import { useState } from 'react'; import Logo from '../public/logo.png'; import Link from 'next/link';
+import Image from 'next/image'; import { useState } from 'react'; import Logo from '../public/logo.png'; import Link from 'next/link';
 
 export default function Home() { const [userType, setUserType] = useState(''); const coachSummaries = { D: 'Driven. Decisive. Demands results. Your go-to for leadership and bold moves.', I: 'Inspiring. Outgoing. Brings energy and connection into every interaction.', S: 'Supportive. Steady. Creates harmony and shows up with loyalty and calm.', C: 'Calculated. Precise. Brings order, structure, and thoughtfulness to the table.' };
 
