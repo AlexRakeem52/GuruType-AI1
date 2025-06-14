@@ -1,148 +1,90 @@
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from 'recharts';
-import Image from 'next/image';
-import Logo from '../public/logo.png';
-
-const COLORS = {
-  D: '#E74C3C',
-  I: '#F1C40F',
-  S: '#2ECC71',
-  C: '#3498DB'
-};
-
-const TYPE_LABELS = {
-  D: 'Dominance',
-  I: 'Influence',
-  S: 'Steadiness',
-  C: 'Conscientiousness'
-};
-
-const TYPE_SYNOPSIS = {
-  D: `You are a natural force of action. You face challenges head-on and don’t wait for permission to lead. Your confidence often influences those around you to move forward with bold decisions. You're competitive, results-driven, and demand progress. While you may overlook details in the pursuit of goals, your ability to inspire momentum is unmatched. Others look to you when it's time to take control. In high-pressure situations, you're the one who takes charge and keeps going.`,
-  I: `You bring energy into every space you enter. Your enthusiasm, creativity, and charisma naturally attract others. You communicate with flair and easily win hearts with your optimism. People often see you as the spark in group dynamics. You love big-picture thinking, and you're most engaged when ideas are flowing freely. Though structure may slow you down, your passion makes you a powerful catalyst for movement. Your strength lies in influence, connection, and inspiration.`,
-  S: `You are grounded and dependable. Others trust you because you provide consistency, empathy, and calm under pressure. You're not one to seek the spotlight, but your loyalty and stability are what hold teams together. You prefer harmony and tend to avoid unnecessary conflict. Patience is your superpower, and people appreciate your supportive nature. You thrive in structured environments where your thoughtful contributions are valued. Quiet strength defines you.`,
-  C: `You have a mind that thrives on analysis and precision. Logic and accuracy are your foundation, and you’re often the one double-checking the details others miss. You are calm, rational, and methodical in your decision-making. Integrity and competence matter deeply to you. You're less concerned with speed and more with doing things the right way. Though you may appear reserved, your standards push everything — and everyone — to excellence. Your insight makes you indispensable.`
-};
+import { Pie } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
 export default function Results() {
   const router = useRouter();
   const { type, scores } = router.query;
-  const [chartData, setChartData] = useState([]);
-  const [topType, setTopType] = useState(null);
-  const [secondType, setSecondType] = useState(null);
-  const [summary, setSummary] = useState('');
 
-  useEffect(() => {
-    if (scores) {
-      const parsed = JSON.parse(scores);
-      const sorted = Object.entries(parsed).sort((a, b) => b[1] - a[1]);
+  const parsedScores = scores ? JSON.parse(scores) : {};
+  const labels = Object.keys(parsedScores);
+  const dataValues = Object.values(parsedScores);
 
-      const top = sorted[0]?.[0];
-      const second = sorted[1]?.[0];
-      const topScore = sorted[0]?.[1];
-      const total = Object.values(parsed).reduce((sum, v) => sum + v, 0);
+  const chartData = {
+    labels,
+    datasets: [
+      {
+        data: dataValues,
+        backgroundColor: ['#3498db', '#f1c40f', '#2ecc71', '#e74c3c'],
+        borderColor: '#111',
+        borderWidth: 2,
+      },
+    ],
+  };
 
-      setTopType(top);
-      setSecondType(second);
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        labels: {
+          color: '#fff',
+          font: {
+            size: 14,
+          },
+        },
+      },
+    },
+  };
 
-      const data = sorted.map(([key, value]) => ({
-        name: TYPE_LABELS[key],
-        value,
-        type: key
-      }));
-      setChartData(data);
-
-      // Handcrafted logic for overall summary
-      if (topScore / total >= 0.5) {
-        setSummary(`Your personality is strongly aligned with ${TYPE_LABELS[top]} — this trait clearly shapes how you lead, communicate, and respond to the world around you.`);
-      } else if (parsed[top] === parsed[second]) {
-        setSummary(`You exhibit a blend of ${TYPE_LABELS[top]} and ${TYPE_LABELS[second]}, making you highly adaptable depending on the situation.`);
-      } else if (Object.values(parsed).every(val => val === parsed[top])) {
-        setSummary(`You have a balanced personality profile, showing equal tendencies across all four DISC traits — a true chameleon who can adjust to almost any team or task.`);
-      } else {
-        setSummary(`While your dominant style is ${TYPE_LABELS[top]}, you show noticeable strengths in other areas as well — making you versatile and multidimensional.`);
-      }
-    }
-  }, [scores]);
-
-  if (!topType || !TYPE_SYNOPSIS[topType]) {
-    return <p style={{ padding: '2rem', color: 'white' }}>Loading results...</p>;
-  }
+  const topType = type || 'D';
+  const descriptions = {
+    D: "You're direct, driven, and determined. You lead naturally and thrive in competitive environments. Challenges excite you, and you often take control in uncertain situations. People look to you for direction, and you're comfortable making quick decisions. You prioritize results over process, and you get things done. Your assertiveness can push boundaries—but that’s where innovation happens. Just be mindful to slow down when needed and listen more than you talk.",
+    I: "You're enthusiastic, inspiring, and magnetic. You light up a room and thrive on social energy. You’re a natural communicator who builds rapport quickly. Vision and positivity drive you—and you often influence others through stories and charm. You may struggle with structure or follow-through, but your creativity and optimism are contagious. When balanced with discipline, you're an unstoppable force.",
+    S: "You're dependable, thoughtful, and grounded. People feel safe around you. You value harmony and loyalty and tend to avoid conflict. While you might not seek the spotlight, your consistency is your superpower. You’re often the glue holding relationships and teams together. With more self-assertion, you can step into bigger leadership roles without sacrificing your calm center.",
+    C: "You're analytical, detail-driven, and highly focused. Precision matters to you. You like logic, data, and structure—and you thrive in environments where things can be optimized. While others chase energy, you chase excellence. You may hesitate in ambiguous situations, but once clear, your insight is unmatched. Just remember: not everything needs to be perfect to be powerful.",
+  };
 
   return (
-    <div style={{
-      padding: '2rem',
-      backgroundColor: '#0d0d0d',
-      color: '#fff',
-      minHeight: '100vh',
-      fontFamily: 'sans-serif'
-    }}>
-      {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
-        <Image src={Logo} alt="GuruType AI Logo" width={40} height={40} />
-        <h1 style={{ marginLeft: '0.75rem', fontSize: '1.75rem' }}>GURUTYPE AI RESULTS</h1>
-      </div>
-
-      {/* Top Type Full Summary */}
-      <div style={{
-        backgroundColor: '#1c1c1e',
-        padding: '2rem',
-        borderRadius: '12px',
-        boxShadow: '0 0 10px rgba(255,255,255,0.1)',
-        marginBottom: '2rem'
-      }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>
-          Your dominant type: {TYPE_LABELS[topType]} ({topType})
-        </h2>
-        <p style={{ lineHeight: '1.6' }}>{TYPE_SYNOPSIS[topType]}</p>
-      </div>
-
-      {/* Overall Personality Insight */}
-      <div style={{
-        backgroundColor: '#2a2a2c',
-        padding: '1.5rem',
-        borderRadius: '10px',
-        marginBottom: '2rem'
-      }}>
-        <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>
-          Your overall personality profile:
-        </h3>
-        <p>{summary}</p>
-      </div>
+    <div style={{ backgroundColor: '#0d0d0d', color: '#fff', minHeight: '100vh', padding: '2rem', fontFamily: 'sans-serif' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem', textAlign: 'center' }}>
+        Your DISC Assessment Results
+      </h1>
+      <p style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1rem' }}>
+        Here’s how your personality breaks down:
+      </p>
 
       {/* Chart */}
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer>
-          <PieChart>
-            <Pie
-              data={chartData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              label={({ name }) => name}
-            >
-              {chartData.map((entry) => (
-                <Cell key={entry.type} fill={COLORS[entry.type]} />
-              ))}
-            </Pie>
-            <Legend />
-          </PieChart>
-        </ResponsiveContainer>
+      <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+        <Pie data={chartData} options={chartOptions} />
+      </div>
+
+      {/* Top Style Breakdown */}
+      <div style={{ marginTop: '3rem', maxWidth: '700px', marginLeft: 'auto', marginRight: 'auto' }}>
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Top Style: {topType}</h2>
+        <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#ccc' }}>
+          {descriptions[topType]}
+        </p>
       </div>
 
       {/* CTA */}
-      <div style={{ marginTop: '3rem', textAlign: 'center' }}>
-        <a href="/signup" style={{
-          padding: '1rem 2rem',
-          backgroundColor: '#6C5CE7',
-          color: '#fff',
-          borderRadius: '8px',
-          textDecoration: 'none',
-          fontWeight: 'bold'
-        }}>
+      <div style={{ textAlign: 'center', marginTop: '3rem' }}>
+        <a
+          href="/signup"
+          style={{
+            backgroundColor: '#6C5CE7',
+            padding: '1rem 2rem',
+            borderRadius: '10px',
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            textDecoration: 'none',
+            display: 'inline-block',
+            maxWidth: '90%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
           Unlock your full report and get your AI coach
         </a>
       </div>
