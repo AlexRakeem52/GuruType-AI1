@@ -5,43 +5,39 @@ import Chart from 'chart.js/auto';
 export default function Results() {
   const router = useRouter();
   const { type, scores } = router.query;
-
   const parsedScores = scores ? JSON.parse(scores) : {};
-  const labels = Object.keys(parsedScores);
-  const dataValues = Object.values(parsedScores);
+
+  const topType = type || 'D';
 
   const chartData = {
-    labels,
+    labels: ['Dominance', 'Influence', 'Steadiness', 'Conscientiousness'],
     datasets: [
       {
-        data: dataValues,
-        backgroundColor: ['#3498db', '#f1c40f', '#2ecc71', '#e74c3c'],
+        data: [
+          parsedScores.D || 0,
+          parsedScores.I || 0,
+          parsedScores.S || 0,
+          parsedScores.C || 0
+        ],
+        backgroundColor: ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db'], // D, I, S, C
         borderColor: '#111',
         borderWidth: 2,
       },
     ],
   };
 
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        labels: {
-          color: '#fff',
-          font: {
-            size: 14,
-          },
-        },
-      },
-    },
-  };
-
-  const topType = type || 'D';
-  const descriptions = {
+  const discDescriptions = {
     D: "You're direct, driven, and determined. You lead naturally and thrive in competitive environments. Challenges excite you, and you often take control in uncertain situations. People look to you for direction, and you're comfortable making quick decisions. You prioritize results over process, and you get things done. Your assertiveness can push boundaries—but that’s where innovation happens. Just be mindful to slow down when needed and listen more than you talk.",
     I: "You're enthusiastic, inspiring, and magnetic. You light up a room and thrive on social energy. You’re a natural communicator who builds rapport quickly. Vision and positivity drive you—and you often influence others through stories and charm. You may struggle with structure or follow-through, but your creativity and optimism are contagious. When balanced with discipline, you're an unstoppable force.",
     S: "You're dependable, thoughtful, and grounded. People feel safe around you. You value harmony and loyalty and tend to avoid conflict. While you might not seek the spotlight, your consistency is your superpower. You’re often the glue holding relationships and teams together. With more self-assertion, you can step into bigger leadership roles without sacrificing your calm center.",
     C: "You're analytical, detail-driven, and highly focused. Precision matters to you. You like logic, data, and structure—and you thrive in environments where things can be optimized. While others chase energy, you chase excellence. You may hesitate in ambiguous situations, but once clear, your insight is unmatched. Just remember: not everything needs to be perfect to be powerful.",
+  };
+
+  const discColors = {
+    D: '#e74c3c',
+    I: '#f1c40f',
+    S: '#2ecc71',
+    C: '#3498db',
   };
 
   return (
@@ -55,14 +51,27 @@ export default function Results() {
 
       {/* Chart */}
       <div style={{ maxWidth: '400px', margin: '0 auto' }}>
-        <Pie data={chartData} options={chartOptions} />
+        <Pie data={chartData} options={{
+          responsive: true,
+          plugins: {
+            legend: {
+              labels: { color: '#fff' }
+            }
+          }
+        }} />
       </div>
 
-      {/* Top Style Breakdown */}
-      <div style={{ marginTop: '3rem', maxWidth: '700px', marginLeft: 'auto', marginRight: 'auto' }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Top Style: {topType}</h2>
+      {/* Top Style */}
+      <div style={{ marginTop: '3rem', maxWidth: '700px', margin: '0 auto' }}>
+        <h2 style={{
+          fontSize: '1.5rem',
+          marginBottom: '0.5rem',
+          color: discColors[topType] || '#fff'
+        }}>
+          Top Style: {topType}
+        </h2>
         <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#ccc' }}>
-          {descriptions[topType]}
+          {discDescriptions[topType]}
         </p>
       </div>
 
