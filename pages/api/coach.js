@@ -1,41 +1,35 @@
-// pages/api/coach.js
-import OpenAI from 'openai';
+import { OpenAI } from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY
 });
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { type, scores } = req.body;
+  const { discType, question } = req.body;
 
-  if (!type || !scores) {
-    return res.status(400).json({ error: 'Missing type or scores' });
+  if (!discType || !question) {
+    return res.status(400).json({ error: 'Missing discType or question' });
   }
 
   try {
-    const completion = await openai.chat.completions.create({
+    const prompt = `You are a DISC-based AI coach. The user is a ${discType}-type personality. Respond like a helpful coach trained in that DISC profile. Here's their request: "${question}"`;
+
+    const response = await openai.chat.completions.create({
       model: 'gpt-4',
       messages: [
-        {
-          role: 'system',
-          content: `You are a DISC personality coach. Based on the DISC type and scores, provide tailored coaching insights in a friendly, empowering tone. Be concise (under 200 words).`,
-        },
-        {
-          role: 'user',
-          content: `DISC Type: ${type}\nScores: ${JSON.stringify(scores)}\nGive a coaching insight for this profile.`,
-        },
-      ],
-      temperature: 0.7,
+        { role: 'system', content: 'You are a helpful DISC AI coach.' },
+        { role: 'user', content: prompt }
+      ]
     });
 
-    const message = completion.choices[0].message.content;
-    res.status(200).json({ message });
+    const reply = response.choices[0].message.content;
+    return res.status(200).json({ reply });
   } catch (error) {
-    console.error('OpenAI Error:', error);
-    res.status(500).json({ error: 'Failed to generate coaching insight' });
+    console.error('OpenAI error:', error);
+    return res.status(500).json({ error: 'Something went wrong generating the response.' });
   }
 }
