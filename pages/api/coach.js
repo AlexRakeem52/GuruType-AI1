@@ -1,7 +1,7 @@
-import { OpenAI } from 'openai';
+import OpenAI from 'openai';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY,
 });
 
 export default async function handler(req, res) {
@@ -16,20 +16,29 @@ export default async function handler(req, res) {
   }
 
   try {
-    const prompt = `You are a DISC-based AI coach. The user is a ${discType}-type personality. Respond like a helpful coach trained in that DISC profile. Here's their request: "${question}"`;
-
     const response = await openai.chat.completions.create({
-      model: 'gpt-4',
+      model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: 'You are a helpful DISC AI coach.' },
-        { role: 'user', content: prompt }
-      ]
+        {
+          role: 'system',
+          content: `You are an AI DISC Coach. The user is a ${discType}-type personality. Respond like a helpful ${discType}-style coach.`,
+        },
+        {
+          role: 'user',
+          content: question,
+        },
+      ],
     });
 
-    const reply = response.choices[0].message.content;
+    const reply = response.choices[0]?.message?.content;
+
+    if (!reply) {
+      return res.status(500).json({ error: 'Failed to generate reply from OpenAI' });
+    }
+
     return res.status(200).json({ reply });
   } catch (error) {
-    console.error('OpenAI error:', error);
+    console.error('[OPENAI ERROR]', error);
     return res.status(500).json({ error: 'Something went wrong generating the response.' });
   }
 }
