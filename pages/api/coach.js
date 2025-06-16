@@ -1,4 +1,4 @@
-import { OpenAI } from "openai";
+import OpenAI from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -32,10 +32,9 @@ export default async function handler(req, res) {
     });
 
     const reply = completion.choices[0].message.content;
-
     return res.status(200).json({ reply });
   } catch (error) {
-    console.error("OpenAI error:", error);
+    console.error("OpenAI error:", error.message, error.response?.data);
     return res.status(500).json({ error: "Something went wrong generating the response." });
   }
 }
