@@ -1,4 +1,4 @@
-import { OpenAI } from "openai";
+1import { OpenAI } from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -16,8 +16,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    console.log("OPENAI_API_KEY exists:", !!process.env.OPENAI_API_KEY);
-
     const completion = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
@@ -34,6 +32,7 @@ export default async function handler(req, res) {
     });
 
     const reply = completion.choices[0].message.content;
+
     return res.status(200).json({ reply });
   } catch (error) {
     console.error("OpenAI error:", error);
