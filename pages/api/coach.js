@@ -1,44 +1,107 @@
-import { OpenAI } from "openai";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
+import Head from "next/head";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+export default function CoachPage({ session }) {
+  const { data: clientSession } = useSession();
+  const [discType, setDiscType] = useState("");
+  const [question, setQuestion] = useState("");
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  const handleSubmit = async () => {
+    if (!discType || !question) {
+      alert("Please enter your DISC type and a question.");
+      return;
+    }
 
-  const { discType, question } = req.body;
+    setLoading(true);
+    setResponse("");
 
-  if (!discType || !question) {
-    return res.status(400).json({ error: "Missing discType or question" });
-  }
-
-  try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4",
-      messages: [
-        {
-          role: "system",
-          content: `You are a DISC personality AI coach. The user is a ${discType}-type personality. Respond like a helpful, strategic coach who understands DISC behavioral dynamics.`,
+    try {
+      const res = await fetch("/api/coach", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          role: "user",
-          content: question,
-        },
-      ],
-      temperature: 0.7,
-    });
+        body: JSON.stringify({ discType, question }),
+      });
 
-    const reply = completion.choices[0].message.content;
+      const data = await res.json();
+      if (data.reply) {
+        setResponse(data.reply);
+      } else {
+        setResponse("No response from AI.");
+      }
+    } catch (error) {
+      setResponse("Error communicating with AI.");
+    }
 
-    return res.status(200).json({ reply });
-  } catch (error) {
-    console.error("OpenAI error:", error);
-    return res.status(500).json({
-      error: "Something went wrong generating the response.",
-      details: error.message,
-    });
+    setLoading(false);
+  };
+
+  return (
+    <>
+      <Head>
+        <title>GuruType AI Coach</title>
+      </Head>
+      <div className="min-h-screen bg-white px-4 py-10">
+        <h1 className="text-3xl font-bold text-center mb-6">Welcome, {session?.user?.name || "Guru"}</h1>
+
+        <div className="max-w-xl mx-auto">
+          <label className="block mb-2 font-semibold">DISC Type:</label>
+          <input
+            className="w-full border border-gray-300 rounded p-2 mb-4"
+            placeholder="e.g., Dominance, Influence, Steadiness, Conscientiousness"
+            value={discType}
+            onChange={(e) => setDiscType(e.target.value)}
+          />
+
+          <label className="block mb-2 font-semibold">Ask Your Question:</label>
+          <textarea
+            className="w-full border border-gray-300 rounded p-2 mb-4"
+            rows={4}
+            placeholder="What's your biggest challenge right now?"
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+          />
+
+          <button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded"
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Thinking..." : "Ask Your Coach"}
+          </button>
+
+          {response && (
+            <div className="mt-6 bg-gray-100 p-4 rounded">
+              <h3 className="font-semibold mb-2">Coach says:</h3>
+              <p>{response}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// 🔐 Protect route with server-side session check
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/signin",
+        permanent: false,
+      },
+    };
   }
+
+  return {
+    props: { session },
+  };
 }
