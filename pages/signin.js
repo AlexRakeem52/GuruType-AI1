@@ -1,35 +1,30 @@
-import { getProviders, signIn } from "next-auth/react";
-import { useEffect, useState } from "react";
+// pages/signin.js
+import { getSession, signIn } from "next-auth/react";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 export default function SignIn() {
-  const [providers, setProviders] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
-    (async () => {
-      const res = await getProviders();
-      setProviders(res);
-    })();
-  }, []);
+    getSession().then(session => {
+      if (session) router.push("/");
+    });
+  }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
-      <div className="bg-white shadow-xl rounded-2xl p-10 max-w-md w-full text-center">
-        <h1 className="text-3xl font-bold mb-4 text-gray-800">Sign In to GuruType AI</h1>
-        <p className="text-gray-600 mb-8">
-          Unlock your full personality insights and meet your AI coach.
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-100 px-4">
+      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-3">Welcome Back</h1>
+        <p className="text-gray-600 mb-6">
+          Sign in to access your DISC coaching and AI dashboard.
         </p>
-
-        {providers &&
-          Object.values(providers).map((provider) => (
-            <div key={provider.name}>
-              <button
-                className="w-full bg-black hover:bg-gray-900 text-white font-semibold py-3 px-6 rounded-xl transition duration-200"
-                onClick={() => signIn(provider.id, { callbackUrl: "/quiz" })}
-              >
-                Sign in with {provider.name}
-              </button>
-            </div>
-          ))}
+        <button
+          onClick={() => signIn("google")}
+          className="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg w-full"
+        >
+          Continue with Google
+        </button>
       </div>
     </div>
   );
