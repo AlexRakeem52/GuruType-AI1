@@ -8,22 +8,20 @@ export default function Signup() {
 
   useEffect(() => {
     getSession().then(session => {
-      if (session) {
-        router.push("/");
-      }
+      if (session) router.push("/");
     });
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Create Your Account</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white to-indigo-50 px-4">
+      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
+        <h1 className="text-3xl font-bold text-gray-900 mb-3">Create Your Account</h1>
         <p className="text-gray-600 mb-6">
-          Unlock your DISC profile and meet your personalized AI coach.
+          Sign up to unlock your personalized DISC coaching experience and get matched with your AI coach.
         </p>
         <button
           onClick={() => signIn("google")}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg w-full transition duration-200"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg w-full"
         >
           Sign up with Google
         </button>
