@@ -8,57 +8,53 @@ export default function SignIn() {
 
   useEffect(() => {
     getSession().then(session => {
-      if (session) router.push("/");
+      if (session) {
+        router.push("/");
+      }
     });
   }, [router]);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "2rem",
-      }}
-    >
-      <div
+    <div style={{
+      minHeight: "100vh",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      background: "linear-gradient(to bottom right, #0f172a, #1e293b)",
+      color: "#fff",
+      padding: "2rem",
+      textAlign: "center",
+    }}>
+      <img
+        src="/logo.png"
+        alt="GuruType AI Logo"
+        style={{ width: "100px", marginBottom: "1.5rem" }}
+      />
+      <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+        Welcome Back
+      </h1>
+      <p style={{ fontSize: "1.1rem", marginBottom: "2rem", maxWidth: "400px" }}>
+        Sign in to access your DISC coaching and AI dashboard.
+      </p>
+      <button
+        onClick={() => signIn("google")}
         style={{
-          background: "#fff",
-          padding: "3rem",
-          borderRadius: "1.5rem",
-          maxWidth: "420px",
-          width: "100%",
-          boxShadow: "0 15px 35px rgba(0,0,0,0.2)",
-          textAlign: "center",
+          backgroundColor: "#4285F4",
+          color: "#fff",
+          padding: "0.75rem 1.5rem",
+          border: "none",
+          borderRadius: "8px",
+          fontSize: "1rem",
+          cursor: "pointer",
+          boxShadow: "0 4px 12px rgba(66, 133, 244, 0.4)",
+          transition: "background-color 0.3s ease",
         }}
+        onMouseOver={e => (e.target.style.backgroundColor = "#3367D6")}
+        onMouseOut={e => (e.target.style.backgroundColor = "#4285F4")}
       >
-        <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "1rem", color: "#111827" }}>
-          Welcome Back
-        </h1>
-        <p style={{ color: "#4B5563", marginBottom: "2rem" }}>
-          Sign in to access your DISC coaching and AI dashboard.
-        </p>
-
-        <button
-          onClick={() => signIn("google")}
-          style={{
-            backgroundColor: "#4285F4",
-            color: "#fff",
-            padding: "0.75rem 1.5rem",
-            border: "none",
-            borderRadius: "0.5rem",
-            fontWeight: "600",
-            fontSize: "1rem",
-            cursor: "pointer",
-            width: "100%",
-            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.15)",
-          }}
-        >
-          Continue with Google
-        </button>
-      </div>
+        Continue with Google
+      </button>
     </div>
   );
 }
