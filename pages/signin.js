@@ -1,5 +1,5 @@
 // pages/signin.js
-import { getSession, signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 
@@ -13,15 +13,48 @@ export default function SignIn() {
   }, [router]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-indigo-100 px-4">
-      <div className="bg-white shadow-xl rounded-2xl p-8 w-full max-w-md text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">Welcome Back</h1>
-        <p className="text-gray-600 mb-6">
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #0f0c29, #302b63, #24243e)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "2rem",
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          padding: "3rem",
+          borderRadius: "1.5rem",
+          maxWidth: "420px",
+          width: "100%",
+          boxShadow: "0 15px 35px rgba(0,0,0,0.2)",
+          textAlign: "center",
+        }}
+      >
+        <h1 style={{ fontSize: "2rem", fontWeight: "bold", marginBottom: "1rem", color: "#111827" }}>
+          Welcome Back
+        </h1>
+        <p style={{ color: "#4B5563", marginBottom: "2rem" }}>
           Sign in to access your DISC coaching and AI dashboard.
         </p>
+
         <button
           onClick={() => signIn("google")}
-          className="bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg w-full"
+          style={{
+            backgroundColor: "#4285F4",
+            color: "#fff",
+            padding: "0.75rem 1.5rem",
+            border: "none",
+            borderRadius: "0.5rem",
+            fontWeight: "600",
+            fontSize: "1rem",
+            cursor: "pointer",
+            width: "100%",
+            boxShadow: "0 2px 6px rgba(0, 0, 0, 0.15)",
+          }}
         >
           Continue with Google
         </button>
