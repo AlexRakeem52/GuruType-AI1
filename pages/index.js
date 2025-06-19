@@ -91,7 +91,7 @@ export default function Home() {
             <p>Who are you?</p>
             <button onClick={() => handleUserTypeSelect('individual')} style={{ marginRight: '1rem' }}>Individual</button>
             <button onClick={() => handleUserTypeSelect('coach')} style={{ marginRight: '1rem' }}>Coach</button>
-            <button onClick={() => handleUserTypeSelect('organization')}>Organization</button>
+            <button onClick={() => handleUserTypeSelect('org')}>Organization</button>
           </div>
         )}
       </div>
