@@ -27,7 +27,7 @@ export default function Home() {
       window.location.href = '/waitlist-individual';
     } else if (type === 'coach') {
       window.location.href = '/waitlist-coach';
-    } else if (type === 'org') {
+    } else if (type === 'organization') {
       window.location.href = '/waitlist-org';
     }
   };
