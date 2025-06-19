@@ -24,9 +24,11 @@ export default function Home() {
 
   const handleUserTypeSelect = (type) => {
     if (type === 'individual') {
-      window.location.href = '/quiz';
-    } else {
-      window.location.href = '/contact'; // placeholder for demo request
+      window.location.href = '/waitlist-individual';
+    } else if (type === 'coach') {
+      window.location.href = '/waitlist-coach';
+    } else if (type === 'org') {
+      window.location.href = '/waitlist-org';
     }
   };
 
