@@ -28,7 +28,7 @@ export default function Home() {
     } else if (type === 'coach') {
       window.location.href = '/waitlist-coach';
     } else if (type === 'organization') {
-      window.location.href = '/waitlist-org';
+      window.location.href = '/waitlist-organization';
     }
   };
 
@@ -162,4 +162,4 @@ export default function Home() {
       </div>
     </div>
   );
-}
+          }
