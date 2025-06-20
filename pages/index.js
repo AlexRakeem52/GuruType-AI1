@@ -62,6 +62,13 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Dashboard Links */}
+      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
+        <Link href="/dashboard/individual"><a style={{ marginRight: '1rem', color: '#ccc' }}>Individual Dashboard</a></Link>
+        <Link href="/dashboard/coach"><a style={{ marginRight: '1rem', color: '#ccc' }}>Coach Dashboard</a></Link>
+        <Link href="/dashboard/organization"><a style={{ color: '#ccc' }}>Organization Dashboard</a></Link>
+      </div>
+
       {/* Hero Section */}
       <div className="fade-in" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
         <Image src={Logo} alt="GuruType AI Logo" width={100} height={100} />
@@ -89,9 +96,9 @@ export default function Home() {
         {showUserTypePrompt && (
           <div style={{ marginTop: '2rem' }}>
             <p>Who are you?</p>
-            <button onClick={() => handleUserTypeSelect('individual')} style={{ marginRight: '1rem' }}>Individual</button>
-            <button onClick={() => handleUserTypeSelect('coach')} style={{ marginRight: '1rem' }}>Coach</button>
-            <button onClick={() => handleUserTypeSelect('organization')}>Organization</button>
+            <button onClick={() => handleUserTypeSelect('individual')} style={buttonStyle}>Individual</button>
+            <button onClick={() => handleUserTypeSelect('coach')} style={buttonStyle}>Coach</button>
+            <button onClick={() => handleUserTypeSelect('organization')} style={buttonStyle}>Organization</button>
           </div>
         )}
       </div>
@@ -133,7 +140,7 @@ export default function Home() {
         </button>
       </div>
 
-      {/* Waitlist */}
+      {/* Waitlist CTA (Generic) */}
       <div style={{
         backgroundColor: '#111',
         padding: '2rem',
@@ -162,4 +169,14 @@ export default function Home() {
       </div>
     </div>
   );
-          }
+}
+
+const buttonStyle = {
+  margin: '0 0.5rem',
+  padding: '0.5rem 1rem',
+  backgroundColor: '#6C5CE7',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '8px',
+  cursor: 'pointer'
+};
