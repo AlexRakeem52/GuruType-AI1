@@ -1,15 +1,21 @@
-// pages/api/auth/[...nextauth].js
-import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
 
-export default NextAuth({
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
-  pages: {
-    signIn: "/signin", // 👈 tells NextAuth to use your custom page
+  secret: process.env.NEXTAUTH_SECRET,
+  callbacks: {
+    async session({ session, token }) {
+      // You can store extra data in the session if needed
+      session.user.id = token.sub;
+      return session;
+    },
   },
-});
+};
+
+export default NextAuth(authOptions);
