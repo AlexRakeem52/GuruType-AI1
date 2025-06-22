@@ -7,22 +7,26 @@ export default function SignupPage() {
   const [role, setRole] = useState('');
 
   const handleSignup = async () => {
-    if (!role) return alert('Please select a role.');
+    if (!role) {
+      alert('Please select a role before signing up.');
+      return;
+    }
 
-    // Save role to localStorage (temporary for MVP)
-    localStorage.setItem('userRole', role);
+    // Temporarily store role in sessionStorage before redirecting to Google Auth
+    sessionStorage.setItem('selectedRole', role);
 
-    // Redirect to sign-in flow (Google OAuth)
-    await signIn('google', { callbackUrl: `/post-login` });
+    // Begin Google sign-in process, redirect to post-login page
+    await signIn('google', { callbackUrl: '/post-login' });
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <h1 className="text-2xl font-bold mb-4">Create Your GuruType AI Account</h1>
-      <div className="space-y-4">
-        <label className="block text-lg">Select Your Role:</label>
+    <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
+      <div className="bg-white shadow-lg p-8 rounded-lg max-w-md w-full">
+        <h1 className="text-2xl font-bold mb-4 text-center">Create Your GuruType AI Account</h1>
+        
+        <label className="block mb-2 text-lg">Select Your Role:</label>
         <select
-          className="border p-2 rounded"
+          className="w-full border rounded px-4 py-2 mb-6"
           value={role}
           onChange={(e) => setRole(e.target.value)}
         >
@@ -31,9 +35,10 @@ export default function SignupPage() {
           <option value="coach">Coach</option>
           <option value="organization">Organization</option>
         </select>
+
         <button
           onClick={handleSignup}
-          className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition"
+          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition"
         >
           Sign Up with Google
         </button>
