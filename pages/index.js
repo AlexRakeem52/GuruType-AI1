@@ -23,13 +23,7 @@ export default function Home() {
   const handleQuizClick = () => setShowUserTypePrompt(true);
 
   const handleUserTypeSelect = (type) => {
-    if (type === 'individual') {
-      window.location.href = '/waitlist-individual';
-    } else if (type === 'coach') {
-      window.location.href = '/waitlist-coach';
-    } else if (type === 'organization') {
-      window.location.href = '/waitlist-organization';
-    }
+    window.location.href = `/waitlist-${type}`;
   };
 
   useEffect(() => {
@@ -46,7 +40,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div style={{ backgroundColor: '#0d0d0d', color: '#fff', fontFamily: 'sans-serif' }}>
+    <div style={{ backgroundColor: '#101d2c', color: '#fff', fontFamily: 'sans-serif' }}>
       {/* Nav Bar */}
       <div style={{
         padding: '1rem 2rem',
@@ -62,36 +56,22 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Dashboard Links */}
-      <div style={{ marginTop: '1rem', textAlign: 'center' }}>
-        <Link href="/dashboard/individual"><a style={{ marginRight: '1rem', color: '#ccc' }}>Individual Dashboard</a></Link>
-        <Link href="/dashboard/coach"><a style={{ marginRight: '1rem', color: '#ccc' }}>Coach Dashboard</a></Link>
-        <Link href="/dashboard/organization"><a style={{ color: '#ccc' }}>Organization Dashboard</a></Link>
-      </div>
-
       {/* Hero Section */}
       <div className="fade-in" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
         <Image src={Logo} alt="GuruType AI Logo" width={100} height={100} />
-        <h1 style={{ fontSize: '2.5rem', marginTop: '1rem' }}>Meet Your AI Coach Built Just for You</h1>
-        <p style={{ fontSize: '1.2rem', margin: '1rem auto', maxWidth: '600px' }}>
-          Unlock personalized growth insights through DISC-powered AI coaching — whether you're an individual, coach, or organization.
+        <h1 style={{ fontSize: '2.5rem', marginTop: '1rem' }}>Know Yourself. Lead Better.</h1>
+        <p style={{ fontSize: '1.2rem', margin: '1rem auto', maxWidth: '700px', color: '#ccc' }}>
+          Powered by DISC + AI. GuruType AI helps individuals, coaches, and organizations unlock peak performance through DISC-based insights and 24/7 AI coaching.
         </p>
-        <p style={{ fontSize: '1rem', margin: '1rem auto', maxWidth: '700px' }}>
-          GuruType AI helps leaders lead smarter, individuals grow stronger, and teams work better — all through an AI engine that understands how people operate.
-        </p>
-        <button onClick={handleQuizClick} style={{
-          padding: '1rem 2rem',
-          backgroundColor: '#6C5CE7',
-          color: '#fff',
-          borderRadius: '10px',
-          fontWeight: 'bold',
-          fontSize: '1rem',
-          marginTop: '1rem',
-          border: 'none',
-          cursor: 'pointer'
-        }}>
-          Take the Demo
-        </button>
+        <div style={{ marginTop: '1rem' }}>
+          <button onClick={handleQuizClick} style={buttonStyle}>Take the Demo Quiz</button>
+          <Link href="/platform"><a style={{ ...buttonStyle, backgroundColor: 'transparent', border: '1px solid #fff', marginLeft: '1rem' }}>Explore the Platform</a></Link>
+        </div>
+        <div style={{ marginTop: '1rem', color: '#888' }}>
+          <span style={{ margin: '0 0.5rem' }}>Company 1</span>
+          <span style={{ margin: '0 0.5rem' }}>Company 2</span>
+          <span style={{ margin: '0 0.5rem' }}>Company 3</span>
+        </div>
 
         {showUserTypePrompt && (
           <div style={{ marginTop: '2rem' }}>
@@ -105,42 +85,36 @@ export default function Home() {
 
       {/* DISC Coaches */}
       <div className="fade-in" style={{ padding: '3rem 2rem', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Meet Your DISC Style Coaches</h2>
-        <p style={{ maxWidth: '700px', margin: '0 auto 2rem' }}>
-          Each of our AI coaches is modeled after the unique strengths of the DISC styles — designed to help you lead, connect, support, or strategize better in real-world situations.
-        </p>
+        <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>Meet Your GuruType</h2>
         <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: '2rem' }}>
           {['D', 'I', 'S', 'C'].map(type => (
             <div key={type} style={{ maxWidth: '200px', textAlign: 'center' }}>
               <Image src={coachImages[type]} alt={`${type} Style Coach`} width={120} height={120} />
-              <h4 style={{ marginTop: '0.5rem' }}>{type} Style Coach</h4>
-              <p style={{ fontSize: '0.9rem', lineHeight: '1.4' }}>{coachSummaries[type]}</p>
+              <h4 style={{ marginTop: '0.5rem', color: '#ccc' }}>{type} Style Coach</h4>
+              <p style={{ fontSize: '0.9rem', lineHeight: '1.4', color: '#aaa' }}>{coachSummaries[type]}</p>
             </div>
           ))}
         </div>
       </div>
 
+      {/* DISC Stats */}
+      <div className="fade-in" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
+        <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>Trusted Worldwide</h2>
+        <p style={{ maxWidth: '600px', margin: '0 auto', color: '#ccc' }}>
+          Over <span style={{ fontWeight: 'bold', color: '#fff' }}>1 million people</span> take a DISC assessment every year. GuruType AI brings this time-tested framework into the AI era — for individuals, coaches, and teams ready to grow.
+        </p>
+      </div>
+
       {/* Final CTA */}
       <div className="fade-in" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
         <h2 style={{ fontSize: '1.75rem', marginBottom: '1rem' }}>You’ve seen generic. Now try personalized.</h2>
-        <p style={{ maxWidth: '600px', margin: '0 auto 1.5rem' }}>
+        <p style={{ maxWidth: '600px', margin: '0 auto 1.5rem', color: '#ccc' }}>
           GuruType AI is built for people who want more than templated advice. If you're serious about growth, let's get started.
         </p>
-        <button onClick={handleQuizClick} style={{
-          padding: '1rem 2rem',
-          backgroundColor: '#6C5CE7',
-          color: '#fff',
-          borderRadius: '10px',
-          fontWeight: 'bold',
-          fontSize: '1rem',
-          border: 'none',
-          cursor: 'pointer'
-        }}>
-          Get Started with Your AI Coach
-        </button>
+        <button onClick={handleQuizClick} style={buttonStyle}>Get Started with Your AI Coach</button>
       </div>
 
-      {/* Waitlist CTA (Generic) */}
+      {/* Waitlist Form */}
       <div style={{
         backgroundColor: '#111',
         padding: '2rem',
@@ -172,11 +146,12 @@ export default function Home() {
 }
 
 const buttonStyle = {
-  margin: '0 0.5rem',
-  padding: '0.5rem 1rem',
+  padding: '1rem 2rem',
   backgroundColor: '#6C5CE7',
   color: '#fff',
   border: 'none',
-  borderRadius: '8px',
+  borderRadius: '10px',
+  fontWeight: 'bold',
+  fontSize: '1rem',
   cursor: 'pointer'
 };
