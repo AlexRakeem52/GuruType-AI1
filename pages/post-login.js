@@ -1,4 +1,4 @@
-'use client'; // ensures browser-only rendering
+'use client'; // force client behavior (optional with dynamic export)
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -6,8 +6,8 @@ import { useSession } from 'next-auth/react';
 import { supabase } from '../lib/supabase';
 
 export default function PostLoginRedirect() {
-  const router = useRouter();
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
     const processUser = async () => {
@@ -55,3 +55,6 @@ export default function PostLoginRedirect() {
 
   return <p className="p-8 text-center">Redirecting to your dashboard...</p>;
 }
+
+// 👇 ADD THIS AT THE BOTTOM
+export const dynamic = 'force-dynamic';
