@@ -1,50 +1,89 @@
-// pages/waitlist-individual.js
-
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function WaitlistIndividual() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0d0d0d] to-[#1f1f1f] text-white flex items-center justify-center p-6">
-      <div className="max-w-md w-full space-y-6 bg-[#111] p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold text-center">Join the Demo Waitlist</h1>
-        <p className="text-center text-sm text-gray-400">Enter your details to unlock your personalized DISC demo experience.</p>
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-        {!submitted ? (
-          <form
-            action="https://formspree.io/f/mnqknqkz"
-            method="POST"
-            onSubmit={() => setSubmitted(true)}
-            className="space-y-4"
-          >
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+
+    try {
+      const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: new FormData(e.target),
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+        router.push('/quiz'); // Redirect to demo quiz
+      } else {
+        alert('Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error submitting form.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white px-6">
+      <div className="max-w-lg w-full bg-[#1a1a1a] p-8 rounded-xl shadow-lg border border-gray-700 text-center">
+        <h1 className="text-3xl font-bold mb-4">Ready to Discover Your Style?</h1>
+        <p className="text-gray-300 mb-6">
+          Take the GuruType AI demo to explore your DISC personality breakdown and unlock your AI coaching path.
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4 text-left">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-400">Name</label>
             <input
-              type="text"
+              required
               name="name"
-              placeholder="Your Name"
-              required
-              className="w-full p-3 rounded-lg bg-[#1e1e1e] text-white border border-gray-700 focus:outline-none"
+              type="text"
+              placeholder="John Doe"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-900 border border-gray-600 text-white"
             />
-            <input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              required
-              className="w-full p-3 rounded-lg bg-[#1e1e1e] text-white border border-gray-700 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="w-full bg-[#6C5CE7] hover:bg-[#5a4ed4] transition text-white font-semibold py-3 px-6 rounded-lg"
-            >
-              Join the Waitlist
-            </button>
-          </form>
-        ) : (
-          <div className="text-center space-y-2">
-            <h2 className="text-xl font-bold text-green-400">You're on the list!</h2>
-            <p>We’ll be in touch soon with your demo access. Get ready to meet your AI Coach.</p>
           </div>
-        )}
+
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-400">Email</label>
+            <input
+              required
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-900 border border-gray-600 text-white"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded transition"
+          >
+            {submitting ? 'Submitting...' : 'Take Demo'}
+          </button>
+        </form>
       </div>
     </div>
   );
