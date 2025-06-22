@@ -65,7 +65,6 @@ export default function Home() {
         </p>
         <div style={{ marginTop: '1rem' }}>
           <button onClick={handleQuizClick} style={buttonStyle}>Take the Demo Quiz</button>
-          <Link href="/platform"><a style={{ ...buttonStyle, backgroundColor: 'transparent', border: '1px solid #fff', marginLeft: '1rem' }}>Explore the Platform</a></Link>
         </div>
         {showUserTypePrompt && (
           <div style={{ marginTop: '2rem' }}>
@@ -99,25 +98,9 @@ export default function Home() {
         </p>
       </div>
 
-      {/* Why GuruType */}
-      <div className="fade-in" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Why GuruType AI?</h2>
-        <p style={{ maxWidth: '700px', margin: '0 auto', color: '#ccc' }}>
-          Most platforms give you generic advice. GuruType AI gives you precision coaching based on who you really are. With DISC-backed insights and an AI coach that evolves with you, your growth becomes smarter, faster, and personal.
-        </p>
-      </div>
-
-      {/* How It Works */}
-      <div className="fade-in" style={{ padding: '4rem 2rem', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '2rem' }}>How It Works</h2>
-        <div style={{ maxWidth: '800px', margin: '0 auto', color: '#ccc', textAlign: 'left' }}>
-          <ol style={{ lineHeight: '2', paddingLeft: '1.2rem' }}>
-            <li>🧠 Take the DISC-based personality quiz</li>
-            <li>📊 Review your unique results with AI-generated insights</li>
-            <li>🤖 Chat with your personalized AI coach for feedback and goal-setting</li>
-            <li>📈 Track your growth over time — both personally and professionally</li>
-          </ol>
-        </div>
+      {/* How It Works Banner */}
+      <div className="fade-in" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
+        <Image src="/images/howitworks-hero.png" alt="How GuruType AI Works" width={1000} height={500} />
       </div>
 
       {/* Built For */}
