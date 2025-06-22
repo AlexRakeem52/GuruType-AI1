@@ -6,7 +6,9 @@ import Chart from 'chart.js/auto';
 import { submitQuizResult } from '../lib/api/submitResults';
 
 export default function Results() {
-  const { data: session, status } = useSession();
+  const sessionHook = useSession();
+  const session = sessionHook?.data;
+  const status = sessionHook?.status;
   const router = useRouter();
   const { type, scores } = router.query;
 
@@ -32,7 +34,7 @@ export default function Results() {
 
   const discDescriptions = {
     D: `You're direct, driven, and determined. You lead naturally and thrive in competitive environments. Challenges excite you, and you often take control in uncertain situations. People look to you for direction, and you're comfortable making quick decisions. You prioritize results over process, and you get things done. Your assertiveness can push boundaries—but that’s where innovation happens. You're often seen as a visionary, willing to take risks others won't. Your leadership style is bold, your expectations are high, and your drive is relentless. Be mindful not to bulldoze others—great leaders elevate everyone. When you pause to listen and collaborate, you become unstoppable. Your hunger to win, when paired with empathy, inspires loyalty and trust. Own your dominance—but wield it with wisdom.`,
-    
+
     I: `You're enthusiastic, magnetic, and expressive. You naturally draw people in with charm, energy, and optimism. You thrive in social settings, love telling stories, and often lead with emotion. Influence is your superpower—others follow your vibe, not just your words. You enjoy being the spark in a room, turning mundane into memorable. While details and discipline may bore you, your creativity, speed, and people skills create rapid momentum. You thrive on affirmation, and your positivity often lifts teams. Just be careful not to overpromise or get distracted chasing the next exciting thing. When you combine your emotional intelligence with structure, you become a force of influence and impact. Your leadership shines brightest when you stay grounded and focused. Keep lighting up rooms—just bring a plan with you.`,
 
     S: `You're steady, thoughtful, and reliable. People feel safe and supported in your presence. You value loyalty, stability, and harmony. While you may avoid conflict, you're often the emotional anchor in teams and relationships. You don't seek the spotlight, but you're the one holding the foundation together. Consistency, patience, and empathy are your quiet superpowers. You're the listener when everyone else is speaking. Your calm demeanor diffuses tension, and your presence brings peace. At times, you may hesitate to assert yourself or take risks—but your leadership is no less powerful. When you trust your voice and take bold steps, people follow with faith. You're not flashy—but you're vital. Keep being the strength behind the scenes—just don’t be afraid to step into the center when it's time.`,
@@ -50,7 +52,6 @@ export default function Results() {
   useEffect(() => {
     const saveResult = async () => {
       if (status !== 'authenticated' || !session?.user?.email) return;
-
       const email = session.user.email;
       await submitQuizResult(email, topType, parsedScores);
     };
@@ -131,3 +132,6 @@ export default function Results() {
     </div>
   );
 }
+
+// 👇 Prevents static pre-render crash
+export const dynamic = 'force-dynamic';
