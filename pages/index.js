@@ -100,7 +100,7 @@ export default function Home() {
 
       {/* How It Works Banner */}
       <div className="fade-in" style={{ textAlign: 'center', padding: '3rem 2rem' }}>
-        <Image src="/images/howitworks-hero.png" alt="How GuruType AI Works" width={1000} height={500} />
+        <Image src="/howitworks-hero.png" alt="How GuruType AI Works" width={1000} height={500} />
       </div>
 
       {/* Built For */}
