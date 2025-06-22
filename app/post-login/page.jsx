@@ -6,7 +6,9 @@ import { useSession } from 'next-auth/react';
 import { supabase } from '../../lib/supabase';
 
 export default function PostLoginPage() {
-  const { data: session, status } = useSession();
+  const sessionHook = useSession();
+  const session = sessionHook?.data;
+  const status = sessionHook?.status;
   const router = useRouter();
 
   useEffect(() => {
