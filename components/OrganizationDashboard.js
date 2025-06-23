@@ -1,78 +1,33 @@
-import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import React from 'react';
 
 export default function OrganizationDashboard() {
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    document.title = 'Organization Dashboard | GuruType AI';
-  }, []);
-
-  if (status === 'loading') {
-    return <div style={styles.loading}>Loading...</div>;
-  }
-
-  if (!session) {
-    return (
-      <div style={styles.accessDenied}>
-        <h2>Access Denied</h2>
-        <p>Please sign in to view your organization dashboard.</p>
-      </div>
-    );
-  }
-
   return (
-    <div style={styles.container}>
-      <h1 style={styles.header}>Welcome, {session.user.name}</h1>
-      <p style={styles.subtext}>This is your organization dashboard where you can:</p>
-      <ul style={styles.list}>
-        <li>📊 Monitor DISC assessments across departments</li>
-        <li>👥 Manage user licenses and invite team members</li>
-        <li>📁 Download team coaching reports</li>
-        <li>📈 View personality trends and compatibility insights</li>
-        <li>🛠️ Customize AI coach settings for company culture</li>
-      </ul>
+    <div className="min-h-screen bg-black text-white p-6">
+      <h1 className="text-3xl font-bold mb-6">Organization Insights</h1>
+
+      <section className="bg-gray-900 rounded-lg p-6 shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-2">Team Summary</h2>
+        <p className="text-gray-300">Overview of DISC styles across departments and teams.</p>
+        <button className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold">
+          View Team Stats
+        </button>
+      </section>
+
+      <section className="bg-gray-900 rounded-lg p-6 shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-2">Compatibility Matrix</h2>
+        <p className="text-gray-300">Analyze team compatibility and friction points using DISC data.</p>
+        <button className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold">
+          Launch Analyzer
+        </button>
+      </section>
+
+      <section className="bg-gray-900 rounded-lg p-6 shadow-md">
+        <h2 className="text-xl font-semibold mb-2">Coaching Reports</h2>
+        <p className="text-gray-300">Access PDF-ready reports and coaching plans for managers.</p>
+        <button className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold">
+          Generate Reports
+        </button>
+      </section>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    backgroundColor: '#0d0d0d',
-    color: '#fff',
-    minHeight: '100vh',
-    padding: '2rem',
-    fontFamily: 'sans-serif',
-  },
-  header: {
-    fontSize: '2rem',
-    marginBottom: '1rem',
-  },
-  subtext: {
-    fontSize: '1.1rem',
-    marginBottom: '1.5rem',
-  },
-  list: {
-    fontSize: '1rem',
-    lineHeight: '1.8',
-    paddingLeft: '1rem',
-  },
-  loading: {
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: '#fff',
-    backgroundColor: '#0d0d0d',
-  },
-  accessDenied: {
-    minHeight: '100vh',
-    backgroundColor: '#0d0d0d',
-    color: '#fff',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: '2rem',
-  },
-};
