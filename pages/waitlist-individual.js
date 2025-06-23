@@ -1,90 +1,114 @@
+'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { supabase } from '@/lib/supabase';
 
 export default function WaitlistIndividual() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [formData, setFormData] = useState({ name: '', email: '' });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    setLoading(true);
 
     try {
-      const res = await fetch('https://formspree.io/f/xqabpnnn', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-        },
-        body: new FormData(e.target),
-      });
+      // Insert user into Supabase
+      const { error: insertError } = await supabase.from('users').upsert([
+        { email, full_name: name }
+      ]);
 
-      if (res.ok) {
-        setSubmitted(true);
-        router.push('/quiz'); // Redirect to demo quiz
-      } else {
-        alert('Something went wrong. Please try again.');
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Error submitting form.');
+      if (insertError) throw insertError;
+
+      // Update the user's role to "individual"
+      const { error: roleError } = await supabase
+        .from('users')
+        .update({ role: 'individual' })
+        .eq('email', email);
+
+      if (roleError) throw roleError;
+
+      // Redirect to the demo quiz
+      router.push(`/demo?email=${encodeURIComponent(email)}`);
+    } catch (error) {
+      console.error('Error submitting waitlist:', error);
+      alert('Something went wrong. Please try again.');
     } finally {
-      setSubmitting(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800 text-white px-6">
-      <div className="max-w-lg w-full bg-[#1a1a1a] p-8 rounded-xl shadow-lg border border-gray-700 text-center">
-        <h1 className="text-3xl font-bold mb-4">Ready to Discover Your Style?</h1>
-        <p className="text-gray-300 mb-6">
-          Take the GuruType AI demo to explore your DISC personality breakdown and unlock your AI coaching path.
-        </p>
+    <div style={{
+      backgroundColor: '#0d0d0d',
+      color: '#fff',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      padding: '2rem',
+      fontFamily: 'sans-serif'
+    }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem', textAlign: 'center' }}>
+        Ready to Discover Your Style?
+      </h1>
+      <p style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1rem', maxWidth: '500px' }}>
+        Take the GuruType AI demo to explore your DISC personality breakdown and unlock your AI coaching path.
+      </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-left">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-400">Name</label>
-            <input
-              required
-              name="name"
-              type="text"
-              placeholder="John Doe"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full p-3 rounded bg-gray-900 border border-gray-600 text-white"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-400">Email</label>
-            <input
-              required
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-3 rounded bg-gray-900 border border-gray-600 text-white"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded transition"
-          >
-            {submitting ? 'Submitting...' : 'Take Demo'}
-          </button>
-        </form>
-      </div>
+      <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
+        <input
+          type="text"
+          placeholder="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          required
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            marginBottom: '1rem',
+            borderRadius: '8px',
+            border: '1px solid #444',
+            backgroundColor: '#1a1a1a',
+            color: '#fff'
+          }}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            marginBottom: '1rem',
+            borderRadius: '8px',
+            border: '1px solid #444',
+            backgroundColor: '#1a1a1a',
+            color: '#fff'
+          }}
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          style={{
+            width: '100%',
+            padding: '0.75rem',
+            backgroundColor: '#6C5CE7',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            fontWeight: 'bold',
+            cursor: loading ? 'not-allowed' : 'pointer'
+          }}
+        >
+          {loading ? 'Submitting...' : 'Take the Demo Quiz'}
+        </button>
+      </form>
     </div>
   );
 }
