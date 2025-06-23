@@ -1,98 +1,40 @@
-'use client';
-
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/router';
+import { supabase } from '../lib/supabase';
 
 export default function WaitlistCoach() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async e => {
     e.preventDefault();
-
-    const { error } = await supabase.from('users').upsert([
-      { email, full_name: name, role: 'coach' }
-    ]);
-
-    if (error) {
+    setSubmitting(true);
+    try {
+      await supabase.from('users').insert([{ ...form, role: 'coach' }]);
+      router.push('/signup');
+    } catch (error) {
+      alert('Something went wrong. Please try again.');
       console.error(error);
-      alert('Something went wrong.');
-    } else {
-      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div style={{
-      backgroundColor: '#0d0d0d',
-      color: '#fff',
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      flexDirection: 'column',
-      padding: '2rem',
-      fontFamily: 'sans-serif'
-    }}>
-      {submitted ? (
-        <h2>Thanks, Coach! We'll be in touch soon.</h2>
-      ) : (
-        <>
-          <h1 style={{ fontSize: '2rem', marginBottom: '1rem', textAlign: 'center' }}>
-            Are You a Coach?
-          </h1>
-          <p style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1rem', maxWidth: '500px' }}>
-            Join the waitlist to be the first to explore our coach dashboard, analyze DISC results, and unlock AI tools for client growth.
-          </p>
-          <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
-            <input
-              type="text"
-              placeholder="Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                marginBottom: '1rem',
-                borderRadius: '8px',
-                border: '1px solid #444',
-                backgroundColor: '#1a1a1a',
-                color: '#fff'
-              }}
-            />
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                marginBottom: '1rem',
-                borderRadius: '8px',
-                border: '1px solid #444',
-                backgroundColor: '#1a1a1a',
-                color: '#fff'
-              }}
-            />
-            <button type="submit" style={{
-              width: '100%',
-              padding: '0.75rem',
-              backgroundColor: '#6C5CE7',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '8px',
-              fontWeight: 'bold',
-              cursor: 'pointer'
-            }}>
-              Join Coach Waitlist
-            </button>
-          </form>
-        </>
-      )}
+    <div style={{ backgroundColor: '#0d0d0d', color: '#fff', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '300px' }}>
+        <h2 style={{ textAlign: 'center' }}>Coach Waitlist</h2>
+        <input type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange} required />
+        <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} required />
+        <button type="submit" disabled={submitting} style={{ backgroundColor: '#6C5CE7', color: '#fff', padding: '0.75rem', borderRadius: '8px', border: 'none', fontWeight: 'bold' }}>
+          {submitting ? 'Submitting...' : 'Join Waitlist'}
+        </button>
+      </form>
     </div>
   );
 }
