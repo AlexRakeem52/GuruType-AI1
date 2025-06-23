@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../lib/supabase';
 
 export default function CoachDashboard() {
   const { data: session } = useSession();
@@ -26,39 +26,21 @@ export default function CoachDashboard() {
   }, [session]);
 
   return (
-    <div style={{
-      backgroundColor: '#0f0f0f',
-      color: '#fff',
-      minHeight: '100vh',
-      padding: '2rem',
-      fontFamily: 'sans-serif'
-    }}>
-      <h1 style={{
-        fontSize: '2rem',
-        marginBottom: '1rem',
-        borderBottom: '2px solid #6C5CE7',
-        paddingBottom: '0.5rem'
-      }}>
-        🧠 My Client Quiz Results
-      </h1>
-
+    <div style={{ backgroundColor: '#0f0f0f', color: '#fff', padding: '2rem', minHeight: '100vh' }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>🧠 My Client Quiz Results</h1>
       {quizResults.length === 0 ? (
-        <p style={{ color: '#aaa' }}>No quiz results found for your clients.</p>
+        <p>No results yet.</p>
       ) : (
-        <table style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          marginTop: '1rem'
-        }}>
+        <table style={{ width: '100%', marginTop: '1rem', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
               <th style={thStyle}>Client Email</th>
               <th style={thStyle}>Top DISC Type</th>
-              <th style={thStyle}>Assessment Date</th>
+              <th style={thStyle}>Submitted</th>
             </tr>
           </thead>
           <tbody>
-            {quizResults.map((result) => (
+            {quizResults.map(result => (
               <tr key={result.id}>
                 <td style={tdStyle}>{result.email}</td>
                 <td style={tdStyle}>{result.top_type}</td>
