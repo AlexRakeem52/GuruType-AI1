@@ -1,30 +1,33 @@
-import { useSession } from 'next-auth/react';
+import React from 'react';
 
 export default function IndividualDashboard() {
-  const { data: session, status } = useSession();
-
-  if (status === 'loading') return <p>Loading your dashboard...</p>;
-  if (!session) return <p>You must be signed in to view your dashboard.</p>;
-
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>Welcome {session.user?.name || ''}</h1>
-      <p>This is your personal GuruType AI coaching space.</p>
+    <div className="min-h-screen bg-black text-white p-6">
+      <h1 className="text-3xl font-bold mb-6">Welcome to Your Dashboard</h1>
 
-      <div style={{ marginTop: '2rem' }}>
-        <h2>Your DISC Results</h2>
-        <p>[Display chart, top traits, and breakdown]</p>
-      </div>
+      <section className="bg-gray-900 rounded-lg p-6 shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-2">Your DISC Profile</h2>
+        <p className="text-gray-300">See your DISC results and track your growth over time.</p>
+        <button className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold">
+          View Results
+        </button>
+      </section>
 
-      <div style={{ marginTop: '2rem' }}>
-        <h2>Your AI Coach</h2>
-        <p>[Chat link, recent insights, and development goals]</p>
-      </div>
+      <section className="bg-gray-900 rounded-lg p-6 shadow-md mb-8">
+        <h2 className="text-xl font-semibold mb-2">AI Coaching</h2>
+        <p className="text-gray-300">Unlock your AI coach for DISC-based guidance.</p>
+        <button className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold">
+          Launch AI Coach
+        </button>
+      </section>
 
-      <div style={{ marginTop: '2rem' }}>
-        <h2>Self-Reflection Journal</h2>
-        <p>[Entries, AI prompts, progress tracking]</p>
-      </div>
+      <section className="bg-gray-900 rounded-lg p-6 shadow-md">
+        <h2 className="text-xl font-semibold mb-2">Self-Coaching Journal</h2>
+        <p className="text-gray-300">Record reflections and track habits based on your DISC style.</p>
+        <button className="mt-4 px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded text-white font-semibold">
+          Start Journaling
+        </button>
+      </section>
     </div>
   );
 }
