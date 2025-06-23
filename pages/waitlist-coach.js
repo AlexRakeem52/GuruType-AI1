@@ -1,51 +1,98 @@
-// pages/waitlist-coach.js
+'use client';
 
 import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function WaitlistCoach() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0d0d0d] to-[#1f1f1f] text-white flex items-center justify-center p-6">
-      <div className="max-w-md w-full space-y-6 bg-[#111] p-8 rounded-2xl shadow-lg">
-        <h1 className="text-3xl font-bold text-center">Coach Demo Access</h1>
-        <p className="text-center text-sm text-gray-400">Sign up to explore the DISC coaching platform and white-label options.</p>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        {!submitted ? (
-          <form
-            action="https://formspree.io/f/mnqknqkz"
-            method="POST"
-            onSubmit={() => setSubmitted(true)}
-            className="space-y-4"
-          >
+    const { error } = await supabase.from('users').upsert([
+      { email, full_name: name, role: 'coach' }
+    ]);
+
+    if (error) {
+      console.error(error);
+      alert('Something went wrong.');
+    } else {
+      setSubmitted(true);
+    }
+  };
+
+  return (
+    <div style={{
+      backgroundColor: '#0d0d0d',
+      color: '#fff',
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      padding: '2rem',
+      fontFamily: 'sans-serif'
+    }}>
+      {submitted ? (
+        <h2>Thanks, Coach! We'll be in touch soon.</h2>
+      ) : (
+        <>
+          <h1 style={{ fontSize: '2rem', marginBottom: '1rem', textAlign: 'center' }}>
+            Are You a Coach?
+          </h1>
+          <p style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1rem', maxWidth: '500px' }}>
+            Join the waitlist to be the first to explore our coach dashboard, analyze DISC results, and unlock AI tools for client growth.
+          </p>
+          <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
             <input
               type="text"
-              name="coachName"
-              placeholder="Your Name"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               required
-              className="w-full p-3 rounded-lg bg-[#1e1e1e] text-white border border-gray-700 focus:outline-none"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                marginBottom: '1rem',
+                borderRadius: '8px',
+                border: '1px solid #444',
+                backgroundColor: '#1a1a1a',
+                color: '#fff'
+              }}
             />
             <input
               type="email"
-              name="coachEmail"
-              placeholder="Your Email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full p-3 rounded-lg bg-[#1e1e1e] text-white border border-gray-700 focus:outline-none"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                marginBottom: '1rem',
+                borderRadius: '8px',
+                border: '1px solid #444',
+                backgroundColor: '#1a1a1a',
+                color: '#fff'
+              }}
             />
-            <button
-              type="submit"
-              className="w-full bg-[#6C5CE7] hover:bg-[#5a4ed4] transition text-white font-semibold py-3 px-6 rounded-lg"
-            >
-              Request Access
+            <button type="submit" style={{
+              width: '100%',
+              padding: '0.75rem',
+              backgroundColor: '#6C5CE7',
+              color: '#fff',
+              border: 'none',
+              borderRadius: '8px',
+              fontWeight: 'bold',
+              cursor: 'pointer'
+            }}>
+              Join Coach Waitlist
             </button>
           </form>
-        ) : (
-          <div className="text-center space-y-2">
-            <h2 className="text-xl font-bold text-green-400">You're in!</h2>
-            <p>Thanks, Coach. We’ll reach out with your personalized GuruType AI demo soon.</p>
-          </div>
-        )}
-      </div>
+        </>
+      )}
     </div>
   );
 }
