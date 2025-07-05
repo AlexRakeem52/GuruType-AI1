@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import GuruTypeLogo from '../public/logo.png'; // Make sure this path matches your project
 
 // Import your full question bank
-import fullQuestionBank from '../data/fullQuestionBank'; // Should be an array of 152 questions with D/I/S/C mapping
+import fullQuestionBank from '../lib/fullQuestionBank'; // Should be an array of 152 questions with D/I/S/C mapping
 
 export default function AssessmentPage() {
   const router = useRouter();
