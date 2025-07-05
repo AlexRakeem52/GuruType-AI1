@@ -1,85 +1,78 @@
- import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import GuruTypeLogo from '../public/logo.png'; // Make sure this path matches your project
+
+// Import your full question bank
+import fullQuestionBank from '../data/fullQuestionBank'; // Should be an array of 152 questions with D/I/S/C mapping
 
 export default function AssessmentPage() {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const router = useRouter();
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [shuffledQuestions, setShuffledQuestions] = useState([]);
 
-  const questions = [
-    {
-      id: 1,
-      text: "Which best describes your instinct in a group setting?",
-      options: [
-        { label: "Take charge immediately", value: "D" },
-        { label: "Get others excited and involved", value: "I" },
-        { label: "Observe and wait for harmony", value: "S" },
-        { label: "Analyze and plan before acting", value: "C" },
-      ]
-    },
-    // Add more questions here (50 total from pool of 152 eventually)
-  ];
+  useEffect(() => {
+    const shuffled = [...fullQuestionBank].sort(() => 0.5 - Math.random()).slice(0, 50);
+    setShuffledQuestions(shuffled);
+  }, []);
 
-  const handleOptionClick = (value) => {
-    setAnswers(prev => ({ ...prev, [currentQuestion]: value }));
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(prev => prev + 1);
+  const handleAnswer = (style) => {
+    setSelectedAnswers([...selectedAnswers, style]);
+    if (currentQuestionIndex < 49) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      // Submit logic here
-      alert("Assessment complete. Submitting answers...");
+      const scores = { D: 0, I: 0, S: 0, C: 0 };
+      selectedAnswers.concat(style).forEach((s) => scores[s]++);
+      const highest = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+      router.push({
+        pathname: '/results',
+        query: {
+          type: highest,
+          scores: JSON.stringify(scores),
+        },
+      });
     }
   };
 
-  return (
-    <div style={{
-      backgroundColor: '#0d0d0d',
-      minHeight: '100vh',
-      padding: '3rem',
-      color: '#fff',
-      fontFamily: 'Segoe UI, sans-serif',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}>
-      {/* Logo */}
-      <img src="/logo.png" alt="GuruType Logo" style={{ width: 160, marginBottom: '2rem' }} />
+  const current = shuffledQuestions[currentQuestionIndex];
 
-      {/* Card */}
-      <div style={{
-        background: '#1c1c1c',
-        borderRadius: '16px',
-        padding: '2rem',
-        maxWidth: '600px',
-        width: '100%',
-        boxShadow: '0 4px 15px rgba(0,0,0,0.4)'
-      }}>
-        <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', color: '#6C5CE7' }}>
-          Question {currentQuestion + 1} of {questions.length}
-        </h2>
-        <p style={{ fontSize: '1.2rem', marginBottom: '1.5rem' }}>
-          {questions[currentQuestion].text}
-        </p>
-        <div style={{ display: 'grid', gap: '1rem' }}>
-          {questions[currentQuestion].options.map((opt, index) => (
-            <button
-              key={index}
-              onClick={() => handleOptionClick(opt.value)}
-              style={{
-                backgroundColor: '#2a2a2a',
-                padding: '0.75rem 1rem',
-                borderRadius: '10px',
-                border: '1px solid #444',
-                color: '#fff',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease-in-out'
-              }}
-              onMouseOver={e => e.currentTarget.style.backgroundColor = '#6C5CE7'}
-              onMouseOut={e => e.currentTarget.style.backgroundColor = '#2a2a2a'}
-            >
-              {opt.label}
-            </button>
-          ))}
-        </div>
+  return (
+    <div style={{ backgroundColor: '#0d0d0d', color: '#fff', minHeight: '100vh', padding: '2rem', fontFamily: 'sans-serif', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <Image src={GuruTypeLogo} alt="GuruType AI Logo" width={120} height={120} />
+      </div>
+
+      <div style={{ maxWidth: '800px', width: '100%', backgroundColor: '#1e1e1e', padding: '2rem', borderRadius: '12px', boxShadow: '0 0 20px rgba(108, 92, 231, 0.2)' }}>
+        <h1 style={{ textAlign: 'center', fontSize: '1.5rem', marginBottom: '1.5rem' }}>DISC Assessment – Question {currentQuestionIndex + 1} of 50</h1>
+
+        {current && (
+          <>
+            <p style={{ fontSize: '1.2rem', marginBottom: '2rem', textAlign: 'center' }}>{current.question}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+              {current.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleAnswer(opt.style)}
+                  style={{
+                    backgroundColor: '#2c2c2c',
+                    color: '#fff',
+                    padding: '1rem',
+                    borderRadius: '8px',
+                    border: '1px solid #444',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#6C5CE7')}
+                  onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#2c2c2c')}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
